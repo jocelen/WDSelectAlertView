@@ -145,11 +145,11 @@
 }
 
 
--(UIDatePicker *)datePick
+-(WDDatePicker *)datePick
 {
     if (!_datePick) {
-        UIDatePicker * view = [[UIDatePicker alloc] init];
-        [view setValue:_styleModel.dateTextColor forKey:@"textColor"];
+        WDDatePicker * view = [[WDDatePicker alloc] init];
+        view.showTextColor = _styleModel.dateTextColor;
         view.backgroundColor = _styleModel.dateBackgroudColor;
         view.datePickerMode = UIDatePickerModeDate;
         NSLocale * locale = [[NSLocale alloc] initWithLocaleIdentifier:_styleModel.locale];
@@ -164,3 +164,27 @@
 
 @end
 
+@implementation WDDatePicker
+
+-(instancetype)init {
+    if (self = [super init]) {
+        if (@available(iOS 13.4, *)) {
+            self.preferredDatePickerStyle = UIDatePickerStyleWheels;
+        }
+    }
+    return self;
+}
+
+-(void)layoutSubviews
+{
+    [super layoutSubviews];
+    if ([self respondsToSelector:sel_registerName("setHighlightsToday:")]) {
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored"-Wundeclared-selector"
+            [self performSelector:@selector(setHighlightsToday:) withObject:[NSNumber numberWithBool:NO]];
+    #pragma clang diagnostic pop
+    }
+    [self setValue:_showTextColor forKey:@"textColor"];
+}
+
+@end
