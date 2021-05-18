@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "WDSelectAlertDefineHeader.h"
+#import <WDSelectAlertDefineHeader.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

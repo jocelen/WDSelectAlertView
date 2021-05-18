@@ -121,7 +121,7 @@ static NSInteger const kButtonTage = 1000;
 
     self.frame = CGRectMake(0, 0, self.frame.size.width, contentHeight);
     _scrollView.frame = scrollFrame;
-    _scrollView.contentSize = CGSizeMake(scrollFrame.size.width, _styleModel.dataArr.count*_styleModel.cellHeight);
+    _scrollView.contentSize = CGSizeMake(scrollFrame.size.width, _styleModel.dataArr.count*(_styleModel.cellHeight + _styleModel.lineHeight));
     _cancelButton.frame = CGRectMake(0, self.frame.size.height - cancelSize.height , cancelSize.width, cancelSize.height);
 }
 
