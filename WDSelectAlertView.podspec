@@ -18,7 +18,9 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+WDSelectAlertView is a customizable pop-up tool. 
+It can be used to replace the components of the system.
+I wrote it for learning purposes, and I hope you can provide valuable comments.
                        DESC
 
   s.homepage         = 'https://github.com/jocelen/WDSelectAlertView'
