@@ -101,7 +101,7 @@
 
 
 
--(void)showSheetSelect:(NSArray<NSString *> *)selectItems selectAction:(clickItemBlcok _Nullable)handler;
+-(void)showSheetSelect:(NSArray<NSString *> *)selectItems disAbleItems:(NSArray<NSString *> *)disAbleItems selectAction:(clickItemBlcok _Nullable)handler;
 {
     if (!selectItems || [selectItems isKindOfClass:[NSArray class]] == NO || selectItems.count == 0) { return;}
     
@@ -114,6 +114,7 @@
     
     WDSheetAlertStyleModel * model = [WDSheetAlertStyleModel defaultStyle];
     model.dataArr = selectItems;
+    model.disAbleDataArr = disAbleItems;
     
     WDSheetAlertView * content = [[WDSheetAlertView alloc] initWithModel:model];
     content.frame = CGRectMake(0, 0, UIScreen.mainScreen.bounds.size.width, 0);

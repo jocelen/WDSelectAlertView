@@ -37,6 +37,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSArray<NSString *> * dataArr;
 
 
+/**  选项 文字颜色*/
+@property (nonatomic, strong) UIColor * disableCellTextColor;
+/**  不可选数据*/
+@property (nonatomic, strong, nullable) NSArray<NSString *> * disAbleDataArr;
+
+
 /**  取消文本*/
 @property (nonatomic, copy) NSString * cancelTitle;
 

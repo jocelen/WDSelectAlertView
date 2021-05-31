@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // MARK: -  Sheet弹框
 /// 选项弹框 选项+取消
--(void)showSheetSelect:(NSArray<NSString *> *)selectItems selectAction:(clickItemBlcok _Nullable)handler;
+-(void)showSheetSelect:(NSArray<NSString *> *)selectItems disAbleItems:(NSArray<NSString *> *)disAbleItems selectAction:(clickItemBlcok _Nullable)handler;
 
 
 // MARK: -  时间选择

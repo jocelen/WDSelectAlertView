@@ -102,6 +102,7 @@ static NSInteger const kButtonTage = 1000;
         button.tag = kButtonTage + i;
         button.frame = CGRectMake(0, i * (_styleModel.cellHeight + _styleModel.lineHeight), self.frame.size.width, _styleModel.cellHeight);
         [button setTitle:_styleModel.dataArr[i] forState:UIControlStateNormal];
+        button.enabled = ![_styleModel.disAbleDataArr containsObject:_styleModel.dataArr[i]];
         [button addTarget:self action:@selector(selectAction:) forControlEvents:UIControlEventTouchUpInside];
         [self.scrollView addSubview:button];
     }
@@ -164,7 +165,7 @@ static NSInteger const kButtonTage = 1000;
     button.backgroundColor = _styleModel.cellBackgroudColor;
     button.titleLabel.font = [UIFont fontWithName:@"PingFangSC-Regular" size:16];
     [button setTitleColor:_styleModel.cellTextColor forState:UIControlStateNormal];
-    
+    [button setTitleColor:_styleModel.disableCellTextColor forState:UIControlStateDisabled];
     return button;
 }
 

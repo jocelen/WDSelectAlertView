@@ -217,8 +217,8 @@
         
     }
     else if (section == 2) {
-        NSArray * titles = @[@"拍照",@"图片"];
-        [self showSheetSelect:titles selectAction:^(NSInteger index) {
+        NSArray * titles = @[@"拍照",@"不可选",@"图片"];
+        [self showSheetSelect:titles disAbleItems:@[@"不可选"] selectAction:^(NSInteger index) {
             NSLog(@"%ld",index);
         }];
         
