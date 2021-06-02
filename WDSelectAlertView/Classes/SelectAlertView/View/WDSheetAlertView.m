@@ -151,6 +151,7 @@ static NSInteger const kButtonTage = 1000;
     if (!_cancelButton) {
         UIButton * button = [self createItemButton];
         [button setTitle:_styleModel.cancelTitle forState:UIControlStateNormal];
+        [button setTitleColor:_styleModel.cancelTitleTextColor forState:UIControlStateNormal];
         [button setTitleEdgeInsets:UIEdgeInsetsMake(-_styleModel.safeEdgeBottomMargin/2, 0, 0, 0)];
         [button addTarget:self action:@selector(cancelAction:) forControlEvents:UIControlEventTouchUpInside];
         _cancelButton = button;

@@ -150,7 +150,7 @@
     
     CGSize size = CGSizeMake([UIScreen mainScreen].bounds.size.width, 250 + [WDSelectAlertHelper safeEdgeBottomMargin]);
     
-    WDDateSlertStyleModel * model = [WDDateSlertStyleModel defaultStyle];
+    WDDateAlertStyleModel * model = [WDDateAlertStyleModel defaultStyle];
     model.date = date;
     model.minimumDate = min;
     model.maximumDate = max;

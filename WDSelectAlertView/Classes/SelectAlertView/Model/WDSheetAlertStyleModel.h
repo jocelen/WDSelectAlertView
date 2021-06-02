@@ -45,7 +45,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**  取消文本*/
 @property (nonatomic, copy) NSString * cancelTitle;
-
+/**  取消 文字颜色*/
+@property (nonatomic, strong) UIColor * cancelTitleTextColor;
 /**  底部安全距离高度 */
 @property (nonatomic, assign, readonly) CGFloat safeEdgeBottomMargin;
 

@@ -22,6 +22,7 @@
     model.cellBackgroudColor = UIColor.whiteColor;
     model.cellTextColor = UIColor.darkTextColor;
     model.cancelTitle = @"取消";
+    model.cancelTitleTextColor = UIColor.darkTextColor;
     model.disableCellTextColor = UIColor.redColor;
     return model;
 }

@@ -13,7 +13,7 @@
 #import "WDAlertWindowViewController.h"
 #import "WDAlertWindowStyleModel.h"
 #import "WDDateIntervalAlertStyleModel.h"
-#import "WDDateSlertStyleModel.h"
+#import "WDDateAlertStyleModel.h"
 #import "WDSelectAlertStyleModel.h"
 #import "WDSheetAlertStyleModel.h"
 #import "WDSelectAlertDefineHeader.h"

@@ -1,5 +1,5 @@
 //
-//  WDDateSlertStyleModel.h
+//  WDDateAlertStyleModel.h
 //  WDSelectAlertView
 //
 //  Created by dzkj on 2020/12/17.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface WDDateSlertStyleModel : NSObject
+@interface WDDateAlertStyleModel : NSObject
 
 /**  背景 颜色*/
 @property (nonatomic, strong) UIColor * backgroudColor;
@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) UIColor * sureTitleColor;
 
 
-+(WDDateSlertStyleModel *)defaultStyle;
++(WDDateAlertStyleModel *)defaultStyle;
 
 @end
 

@@ -1,18 +1,18 @@
 //
-//  WDDateSlertStyleModel.m
+//  WDDateAlertStyleModel.m
 //  WDSelectAlertView
 //
 //  Created by dzkj on 2020/12/17.
 //  Copyright © 2020 jocelen. All rights reserved.
 //
 
-#import "WDDateSlertStyleModel.h"
+#import "WDDateAlertStyleModel.h"
 
-@implementation WDDateSlertStyleModel
+@implementation WDDateAlertStyleModel
 
-+(WDDateSlertStyleModel *)defaultStyle;
++(WDDateAlertStyleModel *)defaultStyle;
 {
-    WDDateSlertStyleModel * model = [WDDateSlertStyleModel new];
+    WDDateAlertStyleModel * model = [WDDateAlertStyleModel new];
     model.backgroudColor = UIColor.lightGrayColor;
     model.dateTextColor = UIColor.darkTextColor;
     model.dateBackgroudColor = UIColor.whiteColor;

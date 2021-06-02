@@ -14,9 +14,9 @@
 		37C783A51F88D370662C470C48915F54 /* WDSheetAlertStyleModel.m in Sources */ = {isa = PBXBuildFile; fileRef = F18C0F66D3FA7BA29BFA81D99493F82A /* WDSheetAlertStyleModel.m */; };
 		405003D2D219C698846F0DDB20411D1B /* Pods-WDSelectAlertView_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = CB07798AB7145F4ABDFB5B8AC699B3CB /* Pods-WDSelectAlertView_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4BBD91A76C27BB9C3F3E014B32389BD0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
-		5273B2D194B95D6D646EF654E5BE9076 /* WDDateSlertStyleModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 232B73835172EF952006A47792D79188 /* WDDateSlertStyleModel.m */; };
+		5273B2D194B95D6D646EF654E5BE9076 /* WDDateAlertStyleModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 232B73835172EF952006A47792D79188 /* WDDateAlertStyleModel.m */; };
 		5C7AFC778738DF296B5976B8169503D3 /* WDAlertWindowStyleModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 42BF738EFEA3BC34A5F115AA1A65C985 /* WDAlertWindowStyleModel.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5EC5927C921BEA66644C79CD35EB9087 /* WDDateSlertStyleModel.h in Headers */ = {isa = PBXBuildFile; fileRef = B73721DEE58AF8C1CD0ED5644E540A55 /* WDDateSlertStyleModel.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5EC5927C921BEA66644C79CD35EB9087 /* WDDateAlertStyleModel.h in Headers */ = {isa = PBXBuildFile; fileRef = B73721DEE58AF8C1CD0ED5644E540A55 /* WDDateAlertStyleModel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		609A835B01FBC6D35D039C8C9EB06781 /* WDDateAlertView.h in Headers */ = {isa = PBXBuildFile; fileRef = F9276FEA8FFB7E34AA0478B4F4156A44 /* WDDateAlertView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		61C6E0E1E55F57CCDECE94E17ED7E44E /* Pods-WDSelectAlertView_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 8BF0B002EC5FF09D3852E53ED6F60F95 /* Pods-WDSelectAlertView_Example-dummy.m */; };
 		648BF0D6832DA0F09E914E75CBD1FE47 /* WDDateIntervalAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E73A89FEA1479E19F1E906354D3D9EB /* WDDateIntervalAlertView.m */; };
@@ -63,7 +63,7 @@
 		1BEC589B5C991D8DFD3748550E486E78 /* WDSelectAlertView.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; path = WDSelectAlertView.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		1D3F0FC1ED837D17F6449B2579B1A856 /* Pods-WDSelectAlertView_Tests-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-WDSelectAlertView_Tests-Info.plist"; sourceTree = "<group>"; };
 		218FEE73A57BA976A2A10CB7BF76F08F /* WDSelectAlertView.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = WDSelectAlertView.modulemap; sourceTree = "<group>"; };
-		232B73835172EF952006A47792D79188 /* WDDateSlertStyleModel.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = WDDateSlertStyleModel.m; sourceTree = "<group>"; };
+		232B73835172EF952006A47792D79188 /* WDDateAlertStyleModel.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = WDDateAlertStyleModel.m; sourceTree = "<group>"; };
 		2B300F343CA3F3EFB8D3226FDC759B78 /* WDSelectAlertView.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = WDSelectAlertView.xcconfig; sourceTree = "<group>"; };
 		2B9D612266D649204841FF1286FA4A8D /* WDSelectAlertView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WDSelectAlertView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3587053B2B69AA63CE982314879AD711 /* WDSelectAlertView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = WDSelectAlertView.h; sourceTree = "<group>"; };
@@ -98,7 +98,7 @@
 		A7F37F0D26BA3A8C17E9CEF67DA9DA2A /* Pods-WDSelectAlertView_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-WDSelectAlertView_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
 		A946D24AF7705CDCEACA640AA91E76C7 /* WDSelectAlertHelper.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = WDSelectAlertHelper.h; sourceTree = "<group>"; };
 		AA30A16F8BFD2EBFCA9DF2349C43B2FA /* WDSelectAlertHelper.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = WDSelectAlertHelper.m; sourceTree = "<group>"; };
-		B73721DEE58AF8C1CD0ED5644E540A55 /* WDDateSlertStyleModel.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = WDDateSlertStyleModel.h; sourceTree = "<group>"; };
+		B73721DEE58AF8C1CD0ED5644E540A55 /* WDDateAlertStyleModel.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = WDDateAlertStyleModel.h; sourceTree = "<group>"; };
 		BEF2D7B7C0ECF257CCBFA924244FDE93 /* WDSelectAlertView-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "WDSelectAlertView-Info.plist"; sourceTree = "<group>"; };
 		CA5A427DBCD3DD433B8A67840503FC78 /* Pods-WDSelectAlertView_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-WDSelectAlertView_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
 		CB07798AB7145F4ABDFB5B8AC699B3CB /* Pods-WDSelectAlertView_Tests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-WDSelectAlertView_Tests-umbrella.h"; sourceTree = "<group>"; };
@@ -214,8 +214,8 @@
 				68E3B7A28C4142EF4E5D3A4D6BBFCE20 /* WDAlertWindowStyleModel.m */,
 				A691418233DDAD3C0C8E3BF1444C810C /* WDDateIntervalAlertStyleModel.h */,
 				5E8111F20CEA32FCF69563DF4F01CA0A /* WDDateIntervalAlertStyleModel.m */,
-				B73721DEE58AF8C1CD0ED5644E540A55 /* WDDateSlertStyleModel.h */,
-				232B73835172EF952006A47792D79188 /* WDDateSlertStyleModel.m */,
+				B73721DEE58AF8C1CD0ED5644E540A55 /* WDDateAlertStyleModel.h */,
+				232B73835172EF952006A47792D79188 /* WDDateAlertStyleModel.m */,
 				97E7DBD34B6BC1F329D7335F86CAA532 /* WDSelectAlertStyleModel.h */,
 				D0CA709D1132F32810BEE5F6300DF3A0 /* WDSelectAlertStyleModel.m */,
 				DF31B78BAAE199E1A816F45A9D0BA178 /* WDSheetAlertStyleModel.h */,
@@ -343,7 +343,7 @@
 				609A835B01FBC6D35D039C8C9EB06781 /* WDDateAlertView.h in Headers */,
 				BDFAAD16FF40D957BC0C657F8DDC3F39 /* WDDateIntervalAlertStyleModel.h in Headers */,
 				EE34AC96ABE41B715B2B92DF429F3459 /* WDDateIntervalAlertView.h in Headers */,
-				5EC5927C921BEA66644C79CD35EB9087 /* WDDateSlertStyleModel.h in Headers */,
+				5EC5927C921BEA66644C79CD35EB9087 /* WDDateAlertStyleModel.h in Headers */,
 				13BFE91CEDFB0E3E44819744131E07C0 /* WDSelectAlertDefineHeader.h in Headers */,
 				12AC4515B20F7C8937E8C227DE7BAB91 /* WDSelectAlertHelper.h in Headers */,
 				E97FFDC036A4B1C1B1209BBCC9218B98 /* WDSelectAlertStyleModel.h in Headers */,
@@ -484,7 +484,7 @@
 				E0BF097CD0FAA76798FF111564EACF1A /* WDDateAlertView.m in Sources */,
 				A3C036A5D2DD2622F13B620F8030AD2A /* WDDateIntervalAlertStyleModel.m in Sources */,
 				648BF0D6832DA0F09E914E75CBD1FE47 /* WDDateIntervalAlertView.m in Sources */,
-				5273B2D194B95D6D646EF654E5BE9076 /* WDDateSlertStyleModel.m in Sources */,
+				5273B2D194B95D6D646EF654E5BE9076 /* WDDateAlertStyleModel.m in Sources */,
 				95B76F979991E8197ECE5A7F66D76931 /* WDSelectAlertHelper.m in Sources */,
 				A14AA101ABCDC0443425BF0A162A4D37 /* WDSelectAlertStyleModel.m in Sources */,
 				B74E1A34BE8597D16FA850C2A4A79A2D /* WDSelectAlertView-dummy.m in Sources */,

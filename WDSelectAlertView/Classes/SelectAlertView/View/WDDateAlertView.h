@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "WDDateSlertStyleModel.h"
+#import "WDDateAlertStyleModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface WDDateAlertView : UIView
 
 /**  样式*/
-@property (nonatomic, strong, readonly) WDDateSlertStyleModel * styleModel;
+@property (nonatomic, strong, readonly) WDDateAlertStyleModel * styleModel;
 
 /**  时间选择器*/
 @property (nonatomic, strong) WDDatePicker * datePick;
@@ -27,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) void(^didClickButton) (BOOL isSure, NSDate * date);
 
 
--(instancetype)initWithModel:(WDDateSlertStyleModel *)model;
+-(instancetype)initWithModel:(WDDateAlertStyleModel *)model;
 
 
 @end

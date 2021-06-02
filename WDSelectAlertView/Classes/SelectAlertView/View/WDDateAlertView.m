@@ -24,7 +24,7 @@
 
 // MARK: -  life cycle
 
--(instancetype)initWithModel:(WDDateSlertStyleModel *)model;
+-(instancetype)initWithModel:(WDDateAlertStyleModel *)model;
 {
     if (self = [super initWithFrame:CGRectZero]) {
         _styleModel = model;
@@ -101,7 +101,7 @@
     self.datePick.date = date;
 }
 
--(void)setStyleModel:(WDDateSlertStyleModel * _Nonnull)styleModel
+-(void)setStyleModel:(WDDateAlertStyleModel * _Nonnull)styleModel
 {
     _styleModel = styleModel;
     
