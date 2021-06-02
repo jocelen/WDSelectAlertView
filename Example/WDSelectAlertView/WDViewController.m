@@ -58,12 +58,13 @@
 
 // 加载数据
 -(void)loadData {
-    _titleArr = @[@"自定义弹框",@"确认弹框", @"选项弹框", @"时间选择", @"时段选择"];
+    _titleArr = @[@"自定义弹框",@"确认弹框", @"选项弹框", @"时间选择", @"时段选择", @"其他选择"];
     _dataArr = @[@[@"上-模糊",@"中-点击取消",@"下"],
                  @[@"单选",@"多选",@"多行多选",@"富文本多选"],
                  @[@"选项",],
                  @[@"时间",],
-                 @[@"时段",]];
+                 @[@"时段",],
+                 @[@"键值对",]];
     
 }
 
@@ -136,12 +137,12 @@
         WDAlertWindowStyleModel * style = [WDAlertWindowStyleModel defaultStyle];
         
         if (row == 0) {
-            style.isGroundGlass = NO;
+            style.isGroundGlass = YES;
             style.canTouchCancel = YES;
             style.position = BCAlertViewPositionTypeTop;
         }
         else if (row == 1) {
-            style.isGroundGlass = YES;
+            style.isGroundGlass = NO;
             style.canTouchCancel = NO;
             style.position = BCAlertViewPositionTypeCenter;
         }
@@ -237,6 +238,14 @@
         NSArray * dates = @[@"08:00",@"12:00"];
         [self showDateParagraphSelect:dates selectAction:^(BOOL isSure, NSString * _Nonnull begin, NSString * _Nonnull end) {
             NSLog(@"%@ -- %@",begin,end);
+        }];
+    }
+    else if (section == 5) {
+        
+        NSArray * keys = @[@"一",@"二",@"三",@"四",@"一",@"二",@"三",@"四"];
+        NSArray * values = @[@"One",@"Two",@"Three",@"Four",@"One",@"Two",@"Three",@"Four"];
+        [self showKeyValueSelect:keys valueArr:values index:1 selectAction:^(BOOL isSure, NSInteger index) {
+            NSLog(@"%ld",index);
         }];
     }
 }

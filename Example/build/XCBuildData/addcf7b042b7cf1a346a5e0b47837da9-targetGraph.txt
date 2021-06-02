@@ -1,0 +1,6 @@
+Target dependency graph (3 targets)
+WDSelectAlertView in Pods
+Pods-WDSelectAlertView_Example in Pods, depends on:
+WDSelectAlertView in Pods (explicit)
+Pods-WDSelectAlertView_Tests in Pods, depends on:
+Pods-WDSelectAlertView_Example in Pods (explicit)

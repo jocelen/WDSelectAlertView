@@ -12,16 +12,19 @@
 
 #import "WDAlertWindowViewController.h"
 #import "WDAlertWindowStyleModel.h"
-#import "WDDateIntervalAlertStyleModel.h"
 #import "WDDateAlertStyleModel.h"
+#import "WDDateIntervalAlertStyleModel.h"
+#import "WDKeyValueAlertStyleModel.h"
 #import "WDSelectAlertStyleModel.h"
 #import "WDSheetAlertStyleModel.h"
-#import "WDSelectAlertDefineHeader.h"
-#import "WDSelectAlertHelper.h"
 #import "WDDateAlertView.h"
 #import "WDDateIntervalAlertView.h"
+#import "WDKeyValueAlertView.h"
 #import "WDSelectAlertView.h"
 #import "WDSheetAlertView.h"
+#import "WDAlertView.h"
+#import "WDSelectAlertDefineHeader.h"
+#import "WDSelectAlertHelper.h"
 
 FOUNDATION_EXPORT double WDSelectAlertViewVersionNumber;
 FOUNDATION_EXPORT const unsigned char WDSelectAlertViewVersionString[];

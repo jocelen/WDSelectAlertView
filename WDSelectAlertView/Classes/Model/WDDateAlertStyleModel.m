@@ -7,21 +7,22 @@
 //
 
 #import "WDDateAlertStyleModel.h"
+#import "WDSelectAlertHelper.h"
 
 @implementation WDDateAlertStyleModel
 
 +(WDDateAlertStyleModel *)defaultStyle;
 {
     WDDateAlertStyleModel * model = [WDDateAlertStyleModel new];
-    model.backgroudColor = UIColor.lightGrayColor;
-    model.dateTextColor = UIColor.darkTextColor;
-    model.dateBackgroudColor = UIColor.whiteColor;
+    model.backgroudColor = [WDSelectAlertHelper toHexColor:@"#F6F7F8"];
+    model.dateTextColor = [WDSelectAlertHelper toHexColor:@"#5B5B5B"];
+    model.dateBackgroudColor = [WDSelectAlertHelper toHexColor:@"#FFFFFF"];
     model.locale = @"zh-Hans";
     model.cancelTitle = @"取消";
-    model.cancelTitleColor = UIColor.darkTextColor;
+    model.cancelTitleColor = [WDSelectAlertHelper toHexColor:@"#7B7B7B"];
     model.sureTitle = @"确定";
-    model.sureTitleColor = UIColor.redColor;
-    
+    model.sureTitleColor = [WDSelectAlertHelper toHexColor:@"#DC3045"];
+
     return model;
 }
 

@@ -25,31 +25,31 @@
     model.lineSapceHeight = 0.7;
     model.alertCornerRadius = 4;
     
-    model.backgroudColor = UIColor.whiteColor;
-    model.lineSpaceColor = UIColor.lightGrayColor;
+    model.backgroudColor = [WDSelectAlertHelper toHexColor:@"#FFFFFF"];
+    model.lineSpaceColor = [WDSelectAlertHelper toHexColor:@"#EAECED"];
 
-    model.titleColor = UIColor.darkTextColor;
+    model.titleColor = [WDSelectAlertHelper toHexColor:@"#3E3E3E"];
     model.titleFont = [UIFont fontWithName:@"PingFangSC-Medium" size:19];
     
-    model.contentColor = UIColor.darkTextColor;
-    model.subContentColor = UIColor.lightGrayColor;
+    model.contentColor = [WDSelectAlertHelper toHexColor:@"#3E3E3E"];
+    model.subContentColor = [WDSelectAlertHelper toHexColor:@"#5B5B5B"];
     model.contentTextAlignment = NSTextAlignmentCenter;
     model.contentFont = [UIFont fontWithName:@"PingFangSC-Regular" size: 18];
     model.lineBreakMode = NSLineBreakByCharWrapping;
     
     model.isOptional = YES;
     model.sureTitle = @"确定";
-    model.sureTitleColor = UIColor.redColor;
+    model.sureTitleColor = [WDSelectAlertHelper toHexColor:@"#DC3045"];
     model.sureTitleFont = [UIFont fontWithName:@"PingFangSC-Heavy" size:18];
     
     model.cancelTitle = @"取消";
-    model.cancelTitleColor = UIColor.lightGrayColor;
+    model.cancelTitleColor = [WDSelectAlertHelper toHexColor:@"#7B7B7B"];
     model.cancelTitleFont = [UIFont fontWithName:@"PingFangSC-Regular" size:18];
     
-    model.highlightColor = UIColor.darkTextColor;
+    model.highlightColor = [WDSelectAlertHelper toHexColor:@"#3E3E3E"];
     model.highlightFont = model.contentFont;
     
-    model.linkColor = UIColor.blueColor;
+    model.linkColor = [WDSelectAlertHelper toHexColor:@"#3057DC"];
     model.linkFont = model.contentFont;
     
     return model;

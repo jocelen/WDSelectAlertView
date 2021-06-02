@@ -18,12 +18,12 @@
     model.cellHeight = [WDSelectAlertHelper adaptScreenSize:60];
     model.lineHeight = [WDSelectAlertHelper adaptScreenSize:0.7];
     
-    model.backgroudColor = UIColor.lightGrayColor;
-    model.cellBackgroudColor = UIColor.whiteColor;
-    model.cellTextColor = UIColor.darkTextColor;
+    model.backgroudColor = [WDSelectAlertHelper toHexColor:@"#F6F7F8"];
+    model.cellBackgroudColor = [WDSelectAlertHelper toHexColor:@"#FFFFFF"];
+    model.cellTextColor = [WDSelectAlertHelper toHexColor:@"#3E3E3E"];
     model.cancelTitle = @"取消";
-    model.cancelTitleTextColor = UIColor.darkTextColor;
-    model.disableCellTextColor = UIColor.redColor;
+    model.cancelTitleTextColor = [WDSelectAlertHelper toHexColor:@"#3E3E3E"];
+    model.disableCellTextColor = [WDSelectAlertHelper toHexColor:@"#BEBEBE"];
     return model;
 }
 

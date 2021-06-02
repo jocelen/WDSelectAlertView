@@ -1,5 +1,5 @@
 PODS:
-  - WDSelectAlertView (0.1.0)
+  - WDSelectAlertView (0.1.4)
 
 DEPENDENCIES:
   - WDSelectAlertView (from `../`)
@@ -9,8 +9,8 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  WDSelectAlertView: 5919462fe5cdbc6e4c7ae8599b9081a04a8bdf73
+  WDSelectAlertView: 6251ba945c14da0e477b6d0eed068805bcb96a6f
 
 PODFILE CHECKSUM: cb8eaec2252979c9c78f9564433b51c94d195ba2
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.10.0
