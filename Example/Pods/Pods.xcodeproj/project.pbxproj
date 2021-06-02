@@ -24,6 +24,10 @@
 		758E857990A870387885BF6557916FC0 /* WDAlertWindowViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 8ECEA06C7B4926B7E6FC2B7CF822A397 /* WDAlertWindowViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		89687C49DA787CC302B6489670B87E60 /* WDSelectAlertView.h in Headers */ = {isa = PBXBuildFile; fileRef = 3587053B2B69AA63CE982314879AD711 /* WDSelectAlertView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8BB78DA513D8D888A1E4FCF849024E19 /* WDSelectAlertView-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 9D9F75ECD82003FBF71E0B8C19350120 /* WDSelectAlertView-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8CF8D10D26676400001440ED /* WDKeyValueAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8D10B26676400001440ED /* WDKeyValueAlertView.m */; };
+		8CF8D10E26676400001440ED /* WDKeyValueAlertView.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CF8D10C26676400001440ED /* WDKeyValueAlertView.h */; };
+		8CF8D11126676471001440ED /* WDKeyValueAlertStyleModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 8CF8D10F26676471001440ED /* WDKeyValueAlertStyleModel.h */; };
+		8CF8D11226676471001440ED /* WDKeyValueAlertStyleModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8D11026676471001440ED /* WDKeyValueAlertStyleModel.m */; };
 		9396932FE6A98CC195AD0E9CF6CE487B /* Pods-WDSelectAlertView_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = F2815B253DE971779C291716095FE3F5 /* Pods-WDSelectAlertView_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		95B76F979991E8197ECE5A7F66D76931 /* WDSelectAlertHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = AA30A16F8BFD2EBFCA9DF2349C43B2FA /* WDSelectAlertHelper.m */; };
 		A14AA101ABCDC0443425BF0A162A4D37 /* WDSelectAlertStyleModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D0CA709D1132F32810BEE5F6300DF3A0 /* WDSelectAlertStyleModel.m */; };
@@ -84,6 +88,10 @@
 		87F6845B27EBB91043C4DE2A3962A8C6 /* Pods-WDSelectAlertView_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-WDSelectAlertView_Example.modulemap"; sourceTree = "<group>"; };
 		8B564DA6ECC0F1D3C859B72B21A37EC0 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		8BF0B002EC5FF09D3852E53ED6F60F95 /* Pods-WDSelectAlertView_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-WDSelectAlertView_Example-dummy.m"; sourceTree = "<group>"; };
+		8CF8D10B26676400001440ED /* WDKeyValueAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WDKeyValueAlertView.m; sourceTree = "<group>"; };
+		8CF8D10C26676400001440ED /* WDKeyValueAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WDKeyValueAlertView.h; sourceTree = "<group>"; };
+		8CF8D10F26676471001440ED /* WDKeyValueAlertStyleModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WDKeyValueAlertStyleModel.h; sourceTree = "<group>"; };
+		8CF8D11026676471001440ED /* WDKeyValueAlertStyleModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WDKeyValueAlertStyleModel.m; sourceTree = "<group>"; };
 		8CFDFBF5E9E0758E6A3401ECF9DA96AE /* Pods-WDSelectAlertView_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-WDSelectAlertView_Tests.modulemap"; sourceTree = "<group>"; };
 		8ECEA06C7B4926B7E6FC2B7CF822A397 /* WDAlertWindowViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = WDAlertWindowViewController.h; sourceTree = "<group>"; };
 		8EEEC595270C71A97E842EB60BAB2065 /* WDDateAlertView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = WDDateAlertView.m; sourceTree = "<group>"; };
@@ -220,6 +228,8 @@
 				D0CA709D1132F32810BEE5F6300DF3A0 /* WDSelectAlertStyleModel.m */,
 				DF31B78BAAE199E1A816F45A9D0BA178 /* WDSheetAlertStyleModel.h */,
 				F18C0F66D3FA7BA29BFA81D99493F82A /* WDSheetAlertStyleModel.m */,
+				8CF8D10F26676471001440ED /* WDKeyValueAlertStyleModel.h */,
+				8CF8D11026676471001440ED /* WDKeyValueAlertStyleModel.m */,
 			);
 			name = Model;
 			path = WDSelectAlertView/Classes/SelectAlertView/Model;
@@ -244,6 +254,8 @@
 				9824825AA26BEF3C08C0187084F8E329 /* WDSelectAlertView.m */,
 				415D161503A0CFDE858EED0E32B3B032 /* WDSheetAlertView.h */,
 				5BA96BB84D823E3B990178D78BE952EF /* WDSheetAlertView.m */,
+				8CF8D10C26676400001440ED /* WDKeyValueAlertView.h */,
+				8CF8D10B26676400001440ED /* WDKeyValueAlertView.m */,
 			);
 			name = View;
 			path = WDSelectAlertView/Classes/SelectAlertView/View;
@@ -341,6 +353,7 @@
 				5C7AFC778738DF296B5976B8169503D3 /* WDAlertWindowStyleModel.h in Headers */,
 				758E857990A870387885BF6557916FC0 /* WDAlertWindowViewController.h in Headers */,
 				609A835B01FBC6D35D039C8C9EB06781 /* WDDateAlertView.h in Headers */,
+				8CF8D10E26676400001440ED /* WDKeyValueAlertView.h in Headers */,
 				BDFAAD16FF40D957BC0C657F8DDC3F39 /* WDDateIntervalAlertStyleModel.h in Headers */,
 				EE34AC96ABE41B715B2B92DF429F3459 /* WDDateIntervalAlertView.h in Headers */,
 				5EC5927C921BEA66644C79CD35EB9087 /* WDDateAlertStyleModel.h in Headers */,
@@ -349,6 +362,7 @@
 				E97FFDC036A4B1C1B1209BBCC9218B98 /* WDSelectAlertStyleModel.h in Headers */,
 				8BB78DA513D8D888A1E4FCF849024E19 /* WDSelectAlertView-umbrella.h in Headers */,
 				89687C49DA787CC302B6489670B87E60 /* WDSelectAlertView.h in Headers */,
+				8CF8D11126676471001440ED /* WDKeyValueAlertStyleModel.h in Headers */,
 				EE14E96831CC3E14EF50E650174A8F00 /* WDSheetAlertStyleModel.h in Headers */,
 				F57FB200CE0A4CB6D4164CBDD619CFDE /* WDSheetAlertView.h in Headers */,
 			);
@@ -480,6 +494,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				BA8C9CD4EF5B22FCD5539F3E5965A965 /* WDAlertWindowStyleModel.m in Sources */,
+				8CF8D11226676471001440ED /* WDKeyValueAlertStyleModel.m in Sources */,
+				8CF8D10D26676400001440ED /* WDKeyValueAlertView.m in Sources */,
 				F9B33A361E41A2E3DF29B3752658D175 /* WDAlertWindowViewController.m in Sources */,
 				E0BF097CD0FAA76798FF111564EACF1A /* WDDateAlertView.m in Sources */,
 				A3C036A5D2DD2622F13B620F8030AD2A /* WDDateIntervalAlertStyleModel.m in Sources */,

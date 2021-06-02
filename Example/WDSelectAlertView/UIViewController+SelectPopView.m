@@ -14,6 +14,7 @@
 #import "WDSelectAlertView.h"
 #import "WDSheetAlertView.h"
 #import "WDDateAlertView.h"
+#import "WDKeyValueAlertView.h"
 
 @implementation UIViewController (SelectPopView)
 
@@ -217,6 +218,37 @@
     [self presentViewController:vc animated:NO completion:nil];
     
 }
+
+-(void)showKeyValueSelect:(NSArray <NSString *> * _Nullable)keyArr valueArr:(NSArray <NSString *> * _Nullable)valueArr index:(NSInteger)index selectAction:(void(^)(BOOL isSure, NSInteger index))handler;
+{
+    WDAlertWindowStyleModel * style = [WDAlertWindowStyleModel defaultStyle];
+    style.isGroundGlass = NO;
+    style.canTouchCancel = YES;
+    style.position = BCAlertViewPositionTypeBottom;
+    WDAlertWindowViewController * vc = [[WDAlertWindowViewController alloc] initWithModel:style];
+        
+    WDKeyValueAlertStyleModel * model = [WDKeyValueAlertStyleModel defaultStyle];
+    model.keyArr = keyArr;
+    model.valueArr = valueArr;
+    
+    __weak typeof(self) weakSelf = self;
+    WDKeyValueAlertView * content = [[WDKeyValueAlertView alloc] initWithModel:model];
+    content.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 300 + [WDSelectAlertHelper safeEdgeBottomMargin]);
+    content.selectIndex = index;
+    // 选择按钮
+    content.didClickButton = ^(BOOL isSure, NSInteger index) {
+        [weakSelf dismissAction];
+
+        if (handler) {
+            handler(isSure,index);
+        }
+    };
+    
+    vc.contentView = content;
+    [self presentViewController:vc animated:NO completion:nil];
+    
+}
+
 
 /// 取消
 -(void)dismissAction;

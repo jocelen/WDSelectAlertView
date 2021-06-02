@@ -40,8 +40,18 @@ NS_ASSUME_NONNULL_BEGIN
 /// 时间区间 选择
 -(void)showDateParagraphSelect:(NSArray <NSString *> * _Nullable)selectDateArr selectAction:(void(^)(BOOL isSure, NSString * begin, NSString * end))handler;
 
+// MARK: -  其他选择
+/// 键值对 选择
+-(void)showKeyValueSelect:(NSArray <NSString *> * _Nullable)keyArr valueArr:(NSArray <NSString *> * _Nullable)valueArr index:(NSInteger)index selectAction:(void(^)(BOOL isSure, NSInteger index))handler;
+
+
+
+
+
+
 /// 取消
 -(void)dismissAction;
+
 
 @end
 
