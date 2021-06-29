@@ -109,6 +109,7 @@ static NSString * const kSelectAlertActionTag = @"ActionEvent%d";
 // 加载数据
 -(void)loadData {
     self.textView.attributedText = self.attributesMessage;
+    self.textView.linkTextAttributes = self.linkTextAttributes;
 }
 
 // 选中事件
@@ -175,16 +176,22 @@ static NSString * const kSelectAlertActionTag = @"ActionEvent%d";
     for (int i = 0; i < self.styleModel.linkArr.count; i++) {
         NSString * item = self.styleModel.linkArr[i];
         NSMutableDictionary * dic = [NSMutableDictionary dictionary];
-        [dic setValue:self.styleModel.linkColor forKey:NSForegroundColorAttributeName];
         [dic setValue:self.styleModel.linkFont forKey:NSFontAttributeName];
-//        [dic setValue:@(NSUnderlineStyleSingle) forKey:NSUnderlineStyleAttributeName];
-//        [dic setValue:self.styleModel.linkColor forKey:NSUnderlineColorAttributeName];
         [dic setValue:[NSString stringWithFormat:@"%@://",[NSString stringWithFormat:kSelectAlertActionTag,i]] forKey:NSLinkAttributeName];
         
         [attributeStr setAttributes:dic range:[self.styleModel.content rangeOfString:item]];
     }
     
     return attributeStr;
+}
+
+-(NSDictionary<NSAttributedStringKey,id> *)linkTextAttributes
+{
+    NSMutableDictionary * dic = [NSMutableDictionary dictionary];
+    [dic setValue:self.styleModel.linkColor forKey:NSForegroundColorAttributeName];
+//    [dic setValue:@(NSUnderlineStyleSingle) forKey:NSUnderlineStyleAttributeName];
+//    [dic setValue:self.styleModel.linkColor forKey:NSUnderlineColorAttributeName];
+    return dic;
 }
 
 // MARK: -  UITextViewDelegate

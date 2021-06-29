@@ -194,9 +194,9 @@
             model.highlightFont = [UIFont systemFontOfSize:15];
             model.highlightColor = UIColor.yellowColor;
 
-            model.linkArr = @[@"窈窕淑女",@"左右芼之",@"寤寐思服"];
+            model.linkArr = @[@"窈窕淑女",@"左右芼之",@"悠哉悠哉"];
             model.linkFont = [UIFont systemFontOfSize:20];
-            model.linkColor = UIColor.blackColor;
+            model.linkColor = UIColor.greenColor;
 
             model.sureTitle = @"追求✅";
             model.sureTitleColor = UIColor.yellowColor;
