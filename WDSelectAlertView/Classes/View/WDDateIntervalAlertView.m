@@ -165,6 +165,7 @@
         __weak typeof(self) weakSelf = self;
 
         WDDateIntervalPickView * pick = [[WDDateIntervalPickView alloc] init];
+        pick.style = _styleModel.style;
         pick.backgroundColor = _styleModel.dateBackgroudColor;
         pick.textColor = _styleModel.dateTextColor;
         pick.lineSpaceColor = _styleModel.lineSpaceColor;
@@ -198,6 +199,7 @@
         __weak typeof(self) weakSelf = self;
 
         WDDateIntervalPickView * pick = [[WDDateIntervalPickView alloc] init];
+        pick.style = _styleModel.style;
         pick.backgroundColor = _styleModel.dateBackgroudColor;
         pick.textColor = _styleModel.dateTextColor;
         pick.lineSpaceColor = _styleModel.lineSpaceColor;
@@ -214,11 +216,13 @@
 @end
 
 
-static NSInteger Multiple = 10000;
-
+static NSInteger DateSelectMultiple = 100;
 
 @interface WDDateIntervalPickView ()<UIPickerViewDelegate,UIPickerViewDataSource>
-@property (nonatomic, strong)NSArray<NSString *> *showData;
+@property (nonatomic, strong)NSArray<NSString *> *showHourData;
+@property (nonatomic, strong)NSArray<NSString *> *showMinuteData;
+/**  选中index*/
+@property (nonatomic, strong)NSMutableArray<NSNumber *> * indexArr;
 
 @end
 
@@ -260,8 +264,7 @@ static NSInteger Multiple = 10000;
     self.delegate = self;
     self.dataSource = self;
     
-    _currentIndex = Multiple*self.showData.count/2;
-    [self scrollToIndex:_currentIndex animated:NO];
+    [self scrollToIndex:_indexArr animated:NO];
 }
 
 // 添加view
@@ -276,90 +279,129 @@ static NSInteger Multiple = 10000;
     
 }
 
--(void)scrollToIndex:(NSInteger)index animated:(BOOL)animated
+-(void)scrollToIndex:(NSArray<NSNumber *> *)indexArr animated:(BOOL)animated
 {
-    [self selectRow:index inComponent:0 animated:animated];
-    [self pickerView:self didSelectRow:index inComponent:0];
+    for (int i = 0; i < indexArr.count; i++) {
+        NSInteger row = indexArr[i].integerValue;
+        [self selectRow:row inComponent:i animated:animated];
+    }
 }
 
 // MARK: -  public methods
 /// 前进一步
 -(void)previousStep;
 {
-    _currentIndex -= 1;
-    [self scrollToIndex:_currentIndex animated:YES];
+    NSInteger index = _indexArr.lastObject.integerValue;
+    [_indexArr replaceObjectAtIndex:_indexArr.count-1 withObject:@(index-1)];
+    
+    /// 借位
+    if (_indexArr.count > 1 && index%self.showMinuteData.count == 0) {
+        NSInteger index = _indexArr[_indexArr.count-2].integerValue;
+        [_indexArr replaceObjectAtIndex:_indexArr.count-2 withObject:@(index-1)];
+    }
+    
+    [self updateDateValue];
+    [self scrollToIndex:_indexArr animated:YES];
 }
 
 /// 后退一步
 -(void)nextStep;
 {
-    _currentIndex += 1;
-    [self scrollToIndex:_currentIndex animated:YES];
+    NSInteger index = _indexArr.lastObject.integerValue + 1;
+    [_indexArr replaceObjectAtIndex:_indexArr.count-1 withObject:@(index)];
+    [self updateDateValue];
+    [self scrollToIndex:_indexArr animated:YES];
 }
 
+/// 刷新
+-(void)updateDateValue;
+{
+    NSMutableString * string = [NSMutableString string];
+    for (int i = 0; i < _indexArr.count; i++) {
+        NSInteger index = _indexArr[i].integerValue;
+        if (i == 0) {
+            [string appendString:self.showHourData[index%self.showHourData.count]];
+        }
+        else {
+            [string appendFormat:@":%@",self.showMinuteData[index%self.showMinuteData.count]];
+        }
+    }
+    _currentValue = string;
+}
 
 // MARK: -  getters and setters
+-(void)setStyle:(WDDateIntervalAlertStyle)style
+{
+    _style = style;
+    
+    _indexArr = [NSMutableArray array];
+    [_indexArr addObject:@(DateSelectMultiple*self.showMinuteData.count/2)];
+    
+    if (_style ==  WDDateIntervalAlertStyleHHMM) {
+        [_indexArr addObject:@(DateSelectMultiple*self.showHourData.count/2)];
+    }
+}
+
 -(void)setCurrentValue:(NSString *)currentValue
 {
-    NSInteger index = 0;
+    NSString * hour = [currentValue componentsSeparatedByString:@":"].firstObject;
+    NSString * min = [currentValue componentsSeparatedByString:@":"].lastObject;
     
-    for (int i = 0; i < self.showData.count ; i++) {
-        if ([currentValue isEqualToString:self.showData[i]]) {
-            index = i;
+    _currentValue = _style == WDDateIntervalAlertStyleHH ? hour : currentValue;
+    
+    for (int i = 0; i < self.showHourData.count ; i++) {
+        if ([hour isEqualToString:self.showHourData[i]]) {
+            NSInteger index = DateSelectMultiple*self.showHourData.count/2 + i;
+            [_indexArr replaceObjectAtIndex:0 withObject:@(index)];
             break;
         }
     }
     
-    _currentValue = currentValue;
-    _currentIndex = Multiple*self.showData.count/2 + index;
-    [self scrollToIndex:_currentIndex animated:NO];
+    for (int i = 0; i < self.showMinuteData.count ; i++) {
+        if ([min isEqualToString:self.showMinuteData[i]]) {
+            NSInteger index = DateSelectMultiple*self.showMinuteData.count/2 + i;
+            if (_indexArr.count > 1) {
+                [_indexArr replaceObjectAtIndex:1 withObject:@(index)];
+            }
+            
+            break;
+        }
+    }
+    [self scrollToIndex:_indexArr animated:NO];
 }
 
 
--(NSArray<NSString *> *)showData{
-    if (!_showData) {
-        _showData = @[@"00:00",
-                      @"01:00",
-                      @"02:00",
-                      @"03:00",
-                      @"04:00",
-                      @"05:00",
-                      @"06:00",
-                      @"07:00",
-                      @"08:00",
-                      @"09:00",
-                      @"10:00",
-                      @"11:00",
-                      @"12:00",
-                      
-                      @"13:00",
-                      @"14:00",
-                      @"15:00",
-                      @"16:00",
-                      @"17:00",
-                      @"18:00",
-                      @"19:00",
-                      @"20:00",
-                      @"21:00",
-                      @"22:00",
-                      @"23:00",
-        ];
+-(NSArray<NSString *> *)showHourData{
+    if (!_showHourData) {
+        NSMutableArray<NSString *> * arr = [NSMutableArray array];
+        for (int i = 0; i < 24; i++) {
+            [arr addObject:[NSString stringWithFormat:@"%02d",i]];
+        }
+        _showHourData = arr;
     }
-    return _showData;
+    return _showHourData;
+}
+
+-(NSArray<NSString *> *)showMinuteData{
+    if (!_showMinuteData) {
+        NSMutableArray<NSString *> * arr = [NSMutableArray array];
+        for (int i = 0; i < 60; i++) {
+            [arr addObject:[NSString stringWithFormat:@"%02d",i]];
+        }
+        _showMinuteData = arr;
+    }
+    return _showMinuteData;
 }
 
 
 // MARK: -  UIPickerViewDelegate
 - (NSInteger)numberOfComponentsInPickerView:(nonnull UIPickerView *)pickerView {
-    return 1;
+    return _indexArr.count;
 }
 
 - (NSInteger)pickerView:(nonnull UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
-    return Multiple*self.showData.count;
-}
-
-- (nullable NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component{
-    return self.showData[row%self.showData.count];
+    NSInteger row = component == 0 ? DateSelectMultiple*self.showHourData.count : DateSelectMultiple*self.showMinuteData.count;
+    return row;
 }
 
 - (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
@@ -377,18 +419,20 @@ static NSInteger Multiple = 10000;
     UILabel *label = [[UILabel alloc] init];
     label.font = [UIFont systemFontOfSize:16];
     label.textAlignment = NSTextAlignmentCenter;
-    label.text = self.showData[row%self.showData.count];
+    NSString * title  = component == 0 ? self.showHourData[row%self.showHourData.count] : self.showMinuteData[row%self.showMinuteData.count];
+
+    label.text = title;
     label.textColor = _textColor;
 
     return label;
 }
 
 
--(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component{
-    _currentIndex = Multiple*self.showData.count/2 + row%self.showData.count;
-    [pickerView selectRow:_currentIndex inComponent:component animated:NO];
+-(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+    [pickerView selectRow:row inComponent:component animated:NO];
     
-    _currentValue = self.showData[row%self.showData.count];
+    [_indexArr replaceObjectAtIndex:component withObject:@(row)];
+    [self updateDateValue];
     if (_valueChangeed) {
         _valueChangeed(self,_currentValue);
     }

@@ -30,8 +30,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface WDDateIntervalPickView : UIPickerView
 
-/**  选中index*/
-@property (nonatomic, assign ) NSInteger currentIndex;
+/**  样式*/
+@property (nonatomic, assign) WDDateIntervalAlertStyle style;
 /**  选中值*/
 @property (nonatomic, copy, nullable) NSString * currentValue;
 

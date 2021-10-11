@@ -10,7 +10,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef NS_ENUM(NSInteger,WDDateIntervalAlertStyle) {
+    WDDateIntervalAlertStyleHH = 0, /// 09
+    WDDateIntervalAlertStyleHHMM = 1, /// 09:03
+};
+
 @interface WDDateIntervalAlertStyleModel : NSObject
+
+/**  样式*/
+@property (nonatomic, assign) WDDateIntervalAlertStyle style;
 
 /**  背景 颜色*/
 @property (nonatomic, strong) UIColor * backgroudColor;

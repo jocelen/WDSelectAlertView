@@ -181,7 +181,7 @@
 }
 
 
--(void)showDateParagraphSelect:(NSArray <NSString *> * _Nullable)selectDateArr selectAction:(void(^)(BOOL isSure, NSString * begin, NSString * end))handler;
+-(void)showDateParagraphSelect:(NSArray <NSString *> * _Nullable)selectDateArr style:(WDDateIntervalAlertStyle)format selectAction:(void(^)(BOOL isSure, NSString * begin, NSString * end))handler;
 {
     WDAlertWindowStyleModel * style = [WDAlertWindowStyleModel defaultStyle];
     style.isGroundGlass = YES;
@@ -193,6 +193,7 @@
     CGSize size = CGSizeMake([UIScreen mainScreen].bounds.size.width, 250 + [WDSelectAlertHelper safeEdgeBottomMargin]);
     
     WDDateIntervalAlertStyleModel * model = [WDDateIntervalAlertStyleModel defaultStyle];
+    model.style = format;
     model.beginDate = selectDateArr.firstObject;
     model.endDate = selectDateArr.lastObject;
     

@@ -14,6 +14,7 @@
 +(WDDateIntervalAlertStyleModel *)defaultStyle;
 {
     WDDateIntervalAlertStyleModel * model = [WDDateIntervalAlertStyleModel new];
+    model.style = WDDateIntervalAlertStyleHH;
     model.backgroudColor = [WDSelectAlertHelper toHexColor:@"#F6F7F8"];
     model.dateTextColor = [WDSelectAlertHelper toHexColor:@"#5B5B5B"];
     model.dateBackgroudColor = [WDSelectAlertHelper toHexColor:@"#FFFFFF"];
