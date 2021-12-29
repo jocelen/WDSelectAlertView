@@ -23,11 +23,11 @@
 
 
 // MARK: -  life cycle
-
+@synthesize styleModel = _styleModel;
 -(instancetype)initWithModel:(WDDateAlertStyleModel *)model;
 {
     if (self = [super initWithFrame:CGRectZero]) {
-        _styleModel = model;
+        self.styleModel = model;
         [self loadConfig];
         [self addSubviews];
         [self loadData];

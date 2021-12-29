@@ -236,7 +236,7 @@
     else if (section == 4) {
         
         NSArray * dates = @[@"08:00",@"12:00"];
-        [self showDateParagraphSelect:dates style:WDDateIntervalAlertStyleHHMM selectAction:^(BOOL isSure, NSString * _Nonnull begin, NSString * _Nonnull end) {
+        [self showDateParagraphSelect:dates style:WDDateIntervalAlertStyleHH selectAction:^(BOOL isSure, NSString * _Nonnull begin, NSString * _Nonnull end) {
             NSLog(@"%@ -- %@",begin,end);
         }];
     }

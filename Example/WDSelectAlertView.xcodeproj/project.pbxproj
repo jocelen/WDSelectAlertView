@@ -496,6 +496,7 @@
 			baseConfigurationReference = 77D9C060A6584BBF138B2525 /* Pods-WDSelectAlertView_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CURRENT_PROJECT_VERSION = 7.0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "WDSelectAlertView/WDSelectAlertView-Prefix.pch";
 				INFOPLIST_FILE = "WDSelectAlertView/WDSelectAlertView-Info.plist";
@@ -512,6 +513,7 @@
 			baseConfigurationReference = 41DB5BC4E8DFC952B4634162 /* Pods-WDSelectAlertView_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CURRENT_PROJECT_VERSION = 7.0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "WDSelectAlertView/WDSelectAlertView-Prefix.pch";
 				INFOPLIST_FILE = "WDSelectAlertView/WDSelectAlertView-Info.plist";

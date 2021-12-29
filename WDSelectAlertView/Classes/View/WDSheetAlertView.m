@@ -25,11 +25,11 @@ static NSInteger const kButtonTage = 1000;
 
 
 // MARK: -  life cycle
-
+@synthesize styleModel = _styleModel;
 -(instancetype)initWithModel:(WDSheetAlertStyleModel *)model;
 {
     if (self = [super initWithFrame:CGRectZero]) {
-        _styleModel = model;
+        self.styleModel = model;
         [self loadConfig];
         [self addSubviews];
         [self loadData];
