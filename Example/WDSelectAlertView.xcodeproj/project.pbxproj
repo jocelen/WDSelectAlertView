@@ -249,11 +249,7 @@
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = jocelen;
 				TargetAttributes = {
-					6003F589195388D20070C39A = {
-						DevelopmentTeam = 3GE6QXCXJ5;
-					};
 					6003F5AD195388D20070C39A = {
-						DevelopmentTeam = 3GE6QXCXJ5;
 						TestTargetID = 6003F589195388D20070C39A;
 					};
 				};
@@ -501,7 +497,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 7.0;
-				DEVELOPMENT_TEAM = 3GE6QXCXJ5;
+				DEVELOPMENT_TEAM = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "WDSelectAlertView/WDSelectAlertView-Prefix.pch";
 				INFOPLIST_FILE = "WDSelectAlertView/WDSelectAlertView-Info.plist";
@@ -519,7 +515,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 7.0;
-				DEVELOPMENT_TEAM = 3GE6QXCXJ5;
+				DEVELOPMENT_TEAM = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "WDSelectAlertView/WDSelectAlertView-Prefix.pch";
 				INFOPLIST_FILE = "WDSelectAlertView/WDSelectAlertView-Info.plist";
@@ -536,7 +532,7 @@
 			baseConfigurationReference = A62A448A98149298E78EB160 /* Pods-WDSelectAlertView_Tests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = 3GE6QXCXJ5;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -562,7 +558,7 @@
 			baseConfigurationReference = E863A645AEBFA9B8CD88D423 /* Pods-WDSelectAlertView_Tests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = 3GE6QXCXJ5;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 					"$(inherited)",

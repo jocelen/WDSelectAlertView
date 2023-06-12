@@ -136,8 +136,9 @@ static NSString * const kSelectAlertActionTag = @"ActionEvent%d";
     CGSize maxSize = CGSizeMake(self.styleModel.maxAlertWidth - self.styleModel.leftPadding*2, CGFLOAT_MAX);
     self.textView.textAlignment = self.styleModel.contentTextAlignment;
     CGRect contentMattStrRect = [self.styleModel.layoutAttributesContent boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading context:nil];
-    CGFloat layoutMessageHeight = contentMattStrRect.size.height;
-    
+    /// 向上10位取整，解决因为\n可能会导致的显示不全
+    CGFloat layoutMessageHeight = ceil(contentMattStrRect.size.height/10)*10;
+
     CGFloat selectHeight = self.styleModel.selectButtonHeight;
 
     CGFloat maxContentHight = (height_max - titleHeight - selectHeight - conetntTopPadding*2);
