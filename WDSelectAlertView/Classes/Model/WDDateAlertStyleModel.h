@@ -10,7 +10,16 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef NS_ENUM(NSInteger,WDDateAlertAlertStyle) {
+    WDDateAlertAlertStyleYYYY = 0, /// 年
+    WDDateAlertAlertStyleYYYYMM = 1, /// 年-月
+    WDDateAlertAlertStyleYYYYMMDD = 2, /// 年-月-日
+};
+
 @interface WDDateAlertStyleModel : NSObject
+
+/**  样式*/
+@property (nonatomic, assign) WDDateAlertAlertStyle style;
 
 /**  背景 颜色*/
 @property (nonatomic, strong) UIColor * backgroudColor;
@@ -29,7 +38,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) UIColor * dateBackgroudColor;
 /**  时间颜色*/
 @property (nonatomic, strong) UIColor * dateTextColor;
-
+/**  分割线颜色*/
+@property (nonatomic, strong) UIColor * lineSpaceColor;
 /**  取消文本*/
 @property (nonatomic, copy) NSString * cancelTitle;
 /**  取消文本 颜色*/

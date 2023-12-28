@@ -10,6 +10,7 @@
 #import "WDSelectAlertDefineHeader.h"
 #import "WDSelectAlertStyleModel.h"
 #import "WDDateIntervalAlertStyleModel.h"
+#import "WDDateAlertStyleModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -36,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // MARK: -  时间选择
 /// 时间选择
--(void)showDateSelect:(NSDate * _Nullable)date minimumDate:(NSDate * _Nullable)min maximumDate:(NSDate * _Nullable)max changeAction:(void(^)(NSDate * date))changeHandler selectAction:(void(^)(BOOL isSure, NSDate * date))handler;
+-(void)showDateSelect:(NSDate * _Nullable)date minimumDate:(NSDate * _Nullable)min maximumDate:(NSDate * _Nullable)max style:(WDDateAlertAlertStyle)format changeAction:(void(^)(NSDate * date))changeHandler selectAction:(void(^)(BOOL isSure, NSDate * date))handler;
 
 /// 时间区间 选择
 -(void)showDateParagraphSelect:(NSArray <NSString *> * _Nullable)selectDateArr style:(WDDateIntervalAlertStyle)format selectAction:(void(^)(BOOL isSure, NSString * begin, NSString * end))handler;

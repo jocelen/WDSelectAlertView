@@ -62,7 +62,7 @@
     _dataArr = @[@[@"上-模糊",@"中-点击取消",@"下"],
                  @[@"单选",@"多选",@"多行多选",@"富文本多选"],
                  @[@"选项",],
-                 @[@"时间",],
+                 @[@"时间YYYYMMDD",@"时间YYYYMM",@"时间YYYY",],
                  @[@"时段",],
                  @[@"键值对",]];
     
@@ -226,8 +226,16 @@
     }
     else if (section == 3) {
         
+        WDDateAlertAlertStyle style = WDDateAlertAlertStyleYYYYMMDD;
+        if (row == 1) {
+            style = WDDateAlertAlertStyleYYYYMM;
+        }
+        else if (row == 2) {
+            style = WDDateAlertAlertStyleYYYY;
+        }
+        
         NSDate * date = [NSDate new];
-        [self showDateSelect:date minimumDate:nil maximumDate:nil changeAction:^(NSDate * _Nonnull date) {
+        [self showDateSelect:date minimumDate:nil maximumDate:nil style:style changeAction:^(NSDate * _Nonnull date) {
             NSLog(@"%@",date);
         } selectAction:^(BOOL isSure, NSDate * _Nonnull date) {
             NSLog(@"%@",date);

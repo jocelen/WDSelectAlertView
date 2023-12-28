@@ -140,7 +140,7 @@
 }
 
 
--(void)showDateSelect:(NSDate * _Nullable)date minimumDate:(NSDate * _Nullable)min maximumDate:(NSDate * _Nullable)max changeAction:(void(^)(NSDate * date))changeHandler selectAction:(void(^)(BOOL isSure, NSDate * date))handler;
+-(void)showDateSelect:(NSDate * _Nullable)date minimumDate:(NSDate * _Nullable)min maximumDate:(NSDate * _Nullable)max style:(WDDateAlertAlertStyle)format changeAction:(void(^)(NSDate * date))changeHandler selectAction:(void(^)(BOOL isSure, NSDate * date))handler;
 {
     WDAlertWindowStyleModel * style = [WDAlertWindowStyleModel defaultStyle];
     style.isGroundGlass = YES;
@@ -155,7 +155,8 @@
     model.date = date;
     model.minimumDate = min;
     model.maximumDate = max;
-
+    model.style = format;
+    
     WDDateAlertView * content = [[WDDateAlertView alloc] initWithModel:model];
     content.frame = CGRectMake(0, 0, size.width, size.height);
     

@@ -12,6 +12,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class WDDatePicker;
+@class WDDatePickView;
 @interface WDDateAlertView : UIView
 
 /**  样式*/
@@ -19,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**  时间选择器*/
 @property (nonatomic, strong) WDDatePicker * datePick;
-
+@property (nonatomic, strong) WDDatePickView * datePickView;
 /**  选中时间*/
 @property (nonatomic, copy) void(^didSelectDate) (NSDate * date);
 
@@ -40,4 +41,23 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+
+@interface WDDatePickView : UIPickerView
+
+/**  样式*/
+@property (nonatomic, assign) WDDateAlertAlertStyle style;
+/**  选中值*/
+@property (nonatomic, strong) NSDate *date;
+
+/**  文字 颜色*/
+@property (nonatomic, strong) UIColor * textColor;
+
+/**  线条颜色 颜色*/
+@property (nonatomic, strong) UIColor * lineSpaceColor;
+
+
+/**  选择值改变*/
+@property (nonatomic, copy, nullable) void(^valueChangeed)(WDDatePickView * view,NSDate * value);
+
+@end
 NS_ASSUME_NONNULL_END

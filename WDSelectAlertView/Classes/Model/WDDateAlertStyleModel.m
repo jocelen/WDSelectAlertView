@@ -14,9 +14,11 @@
 +(WDDateAlertStyleModel *)defaultStyle;
 {
     WDDateAlertStyleModel * model = [WDDateAlertStyleModel new];
+    model.style = WDDateAlertAlertStyleYYYYMMDD;
     model.backgroudColor = [WDSelectAlertHelper toHexColor:@"#F6F7F8"];
     model.dateTextColor = [WDSelectAlertHelper toHexColor:@"#5B5B5B"];
     model.dateBackgroudColor = [WDSelectAlertHelper toHexColor:@"#FFFFFF"];
+    model.lineSpaceColor = [WDSelectAlertHelper toHexColor:@"#EAECED"];
     model.locale = @"zh-Hans";
     model.cancelTitle = @"取消";
     model.cancelTitleColor = [WDSelectAlertHelper toHexColor:@"#7B7B7B"];
