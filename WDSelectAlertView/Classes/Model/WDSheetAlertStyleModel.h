@@ -33,6 +33,16 @@ NS_ASSUME_NONNULL_BEGIN
 /**  line高度 默认0.7*/
 @property (nonatomic, assign) CGFloat lineHeight;
 
+/**  标题*/
+@property (nonatomic, copy, nullable) NSString * title;
+
+/**  标题 属性*/
+@property (nonatomic, assign) CGFloat titleTopPadding;
+@property (nonatomic, assign) CGFloat titleLeftPadding;
+@property (nonatomic, strong) UIFont * titleFont;
+@property (nonatomic, strong) UIColor * titleColor;
+@property (nonatomic, assign) NSInteger titleNumberOfLines;
+
 /**  数据*/
 @property (nonatomic, strong) NSArray<NSString *> * dataArr;
 
@@ -53,6 +63,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 +(WDSheetAlertStyleModel *)defaultStyle;
 
+/// 计算标题
+-(CGRect)layoutTitleFrame;
+-(CGRect)layoutTitleViewFrame;
 
 @end
 

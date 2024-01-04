@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'WDSelectAlertView'
-  s.version          = '0.1.9'
+  s.version          = '0.1.10'
   s.summary          = 'WDSelectAlertView is a customizable pop-up tool.'
 
 # This description is used to generate tags and improve search results.

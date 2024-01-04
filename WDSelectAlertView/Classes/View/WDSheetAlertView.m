@@ -12,6 +12,10 @@ static NSInteger const kButtonTage = 1000;
 
 @interface WDSheetAlertView ()
 
+/**  标题*/
+@property (nonatomic, strong) UIView * titleView;
+@property (nonatomic, strong) UILabel * titleLabel;
+
 /**  ScrollView*/
 @property (nonatomic, strong) UIScrollView * scrollView;
 
@@ -55,7 +59,8 @@ static NSInteger const kButtonTage = 1000;
 
 // 添加view
 -(void)addSubviews {
-    
+    [self.titleView addSubview:self.titleLabel];
+    [self addSubview:self.titleView];
     [self addSubview:self.scrollView];
     [self addSubview:self.cancelButton];
 }
@@ -97,6 +102,8 @@ static NSInteger const kButtonTage = 1000;
 /// 计算高度
 -(void)updateFrame;
 {
+    _titleView.frame = _styleModel.layoutTitleViewFrame;
+    _titleLabel.frame = _styleModel.layoutTitleFrame;
     for (int i = 0; i < _styleModel.dataArr.count; i++) {
         UIButton * button = [self createItemButton];
         button.tag = kButtonTage + i;
@@ -107,7 +114,7 @@ static NSInteger const kButtonTage = 1000;
         [self.scrollView addSubview:button];
     }
     
-    CGRect scrollFrame = CGRectMake(0, 0, self.frame.size.width, 0);
+    CGRect scrollFrame = CGRectMake(0, CGRectGetMaxY(_titleView.frame), self.frame.size.width, 0);
     if (_styleModel.dataArr.count > _styleModel.maxShowCount) {
         _scrollView.scrollEnabled = YES;
         scrollFrame.size.height = (_styleModel.maxShowCount + 0.6f) *_styleModel.cellHeight;
@@ -118,7 +125,7 @@ static NSInteger const kButtonTage = 1000;
     }
     
     CGSize cancelSize = CGSizeMake(self.frame.size.width, _styleModel.cellHeight + _styleModel.safeEdgeBottomMargin);
-    CGFloat contentHeight = scrollFrame.size.height + self.spaceHeight + cancelSize.height;
+    CGFloat contentHeight = _titleView.frame.size.height + scrollFrame.size.height + self.spaceHeight + cancelSize.height;
 
     self.frame = CGRectMake(0, 0, self.frame.size.width, contentHeight);
     _scrollView.frame = scrollFrame;
@@ -132,6 +139,30 @@ static NSInteger const kButtonTage = 1000;
 {
     CGFloat height = 8 + MAX(0, (_styleModel.dataArr.count - 1)) * _styleModel.lineHeight;
     return height;
+}
+
+-(UIView *)titleView
+{
+    if (_titleView == nil) {
+        UIView * view = [[UIView alloc] init];
+        view.backgroundColor = self.styleModel.cellBackgroudColor;
+        _titleView = view;
+    }
+    return _titleView;
+}
+
+-(UILabel *)titleLabel
+{
+    if (_titleLabel == nil) {
+        UILabel * label = [[UILabel alloc] init];
+        label.textAlignment = NSTextAlignmentCenter;
+        label.font = self.styleModel.titleFont;
+        label.textColor = self.styleModel.titleColor;
+        label.text = self.styleModel.title;
+        label.numberOfLines = self.styleModel.titleNumberOfLines;
+        _titleLabel = label;
+    }
+    return _titleLabel;
 }
 
 -(UIScrollView *)scrollView

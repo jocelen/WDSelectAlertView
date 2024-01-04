@@ -61,7 +61,7 @@
     _titleArr = @[@"自定义弹框",@"确认弹框", @"选项弹框", @"时间选择", @"时段选择", @"其他选择"];
     _dataArr = @[@[@"上-模糊",@"中-点击取消",@"下"],
                  @[@"单选",@"多选",@"多行多选",@"富文本多选"],
-                 @[@"选项",],
+                 @[@"选项",@"选项(有标题)",],
                  @[@"时间YYYYMMDD",@"时间YYYYMM",@"时间YYYY",],
                  @[@"时段",],
                  @[@"键值对",]];
@@ -218,8 +218,9 @@
         
     }
     else if (section == 2) {
-        NSArray * titles = @[@"拍照",@"不可选",@"图片"];
-        [self showSheetSelect:titles disAbleItems:@[@"不可选"] selectAction:^(NSInteger index) {
+        NSString * title = row == 1 ? @"温馨提示\n 关关雎鸠，在河之洲。窈窕淑女，君子好逑。参差荇菜，左右流之。窈窕淑女，寤寐求之。" : @"";
+        NSArray * selects = @[@"拍照",@"不可选",@"图片"];
+        [self showSheetSelect:title selectItems:selects disAbleItems:@[@"不可选"] selectAction:^(NSInteger index) {
             NSLog(@"%ld",index);
         }];
         

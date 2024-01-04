@@ -75,9 +75,9 @@ static NSString * const kSelectAlertActionTag = @"ActionEvent%d";
 
     _titleLabel.frame = self.styleModel.layoutTitleFrame;
     /// 内容
-    CGFloat conetntTopPadding = leftPadding * (self.styleModel.hasTitle ? 0 : 2);
+    CGFloat contentTopPadding = leftPadding * (self.styleModel.hasTitle ? 0 : 2);
     
-    _textView.frame = CGRectMake(leftPadding, CGRectGetMaxY(_titleLabel.frame) + conetntTopPadding, width_max - leftPadding*2, self.styleModel.layoutContentHeight);
+    _textView.frame = CGRectMake(leftPadding, CGRectGetMaxY(_titleLabel.frame) + contentTopPadding, width_max - leftPadding*2, self.styleModel.layoutContentHeight);
    
     /// 选项
     CGFloat contentY = self.frame.size.height - self.styleModel.selectButtonHeight;
@@ -128,7 +128,7 @@ static NSString * const kSelectAlertActionTag = @"ActionEvent%d";
 {
     
     CGFloat leftPadding = self.styleModel.leftPadding;
-    CGFloat conetntTopPadding = leftPadding * (self.styleModel.hasTitle ? 1 : 2);
+    CGFloat contentTopPadding = leftPadding * (self.styleModel.hasTitle ? 1 : 2);
     CGFloat height_max = self.styleModel.maxAlertHeight;
     
     CGFloat titleHeight = self.styleModel.layoutTitleFrame.size.height;
@@ -141,10 +141,10 @@ static NSString * const kSelectAlertActionTag = @"ActionEvent%d";
 
     CGFloat selectHeight = self.styleModel.selectButtonHeight;
 
-    CGFloat maxContentHight = (height_max - titleHeight - selectHeight - conetntTopPadding*2);
+    CGFloat maxContentHight = (height_max - titleHeight - selectHeight - contentTopPadding*2);
     BOOL canScrollEnabled = layoutMessageHeight > maxContentHight;
     
-    CGFloat messageHeight = MIN(maxContentHight, layoutMessageHeight) + conetntTopPadding*2;
+    CGFloat messageHeight = MIN(maxContentHight, layoutMessageHeight) + contentTopPadding*2;
     
     /// 总高度
     CGFloat layoutAlertHeight = titleHeight + messageHeight + selectHeight;
