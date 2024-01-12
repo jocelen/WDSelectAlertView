@@ -1,6 +1,33 @@
-.svn/
+### Build generated ###
 .DS_Store
+.svn/
+
+### Xcode ###
+## User settings
+xcuserdata/
 build/
 .idea/
-*.iml
+xcschememanagement.plist
 xcuserdata/
+UserInterface.xcuserstate
+UserInterfaceState.xcuserstate
+
+## Xcode 8 and earlier
+*.xcscmblueprint
+*.xccheckout
+
+### Xcode Patch ###
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcodeproj/project.xcworkspace/
+!*.xcworkspace/contents.xcworkspacedata
+/*.gcno
+**/xcshareddata/WorkspaceSettings.xcsettings
+
+### DerivedData ###
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+*.iml
