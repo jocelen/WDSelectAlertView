@@ -137,7 +137,7 @@ static NSInteger const kButtonTage = 1000;
 
 -(CGFloat)spaceHeight
 {
-    CGFloat height = 8 + MAX(0, (_styleModel.dataArr.count - 1)) * _styleModel.lineHeight;
+    CGFloat height = 8 + MAX(0, (MIN(_styleModel.dataArr.count, _styleModel.maxShowCount) - 1)) * _styleModel.lineHeight;
     return height;
 }
 
