@@ -102,7 +102,7 @@
 
 
 
--(void)showSheetSelect:(NSString * _Nullable)title selectItems:(NSArray<NSString *> *)selectItems disAbleItems:(NSArray<NSString *> * _Nullable)disAbleItems selectAction:(clickItemBlcok _Nullable)handler;
+-(void)showSheetSelect:(NSString * _Nullable)title selectItems:(NSArray<NSString *> *)selectItems selectedIndex:(NSInteger)selectedIndex disAbleItems:(NSArray<NSString *> * _Nullable)disAbleItems selectAction:(clickItemBlcok _Nullable)handler;
 {
     if (!selectItems || [selectItems isKindOfClass:[NSArray class]] == NO || selectItems.count == 0) { return;}
     
@@ -117,6 +117,12 @@
     model.title = title;
     model.dataArr = selectItems;
     model.disAbleDataArr = disAbleItems;
+    model.selectedIndex = selectedIndex;
+    model.selectedTextColor = UIColor.redColor;
+    model.iconPositionLeft = NO;
+    model.iconSpacing = 14;
+    model.selectedItemImage = [UIImage imageNamed:@"icon_selected"];
+    model.selectedEnabled = YES;
     
     WDSheetAlertView * content = [[WDSheetAlertView alloc] initWithModel:model];
     content.frame = CGRectMake(0, 0, UIScreen.mainScreen.bounds.size.width, 0);

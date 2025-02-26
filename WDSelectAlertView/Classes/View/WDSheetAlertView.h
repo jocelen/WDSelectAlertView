@@ -30,4 +30,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@interface WDSheetAlertButton : UIButton
+- (void)setIconInLeftWithSpacing:(CGFloat)Spacing;
+- (void)setIconInRightWithSpacing:(CGFloat)Spacing;
+@end
+
 NS_ASSUME_NONNULL_END

@@ -47,7 +47,20 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSArray<NSString *> * dataArr;
 
 
-/**  选项 文字颜色*/
+/**  选中第几个 -1 默认不选中*/
+@property (nonatomic, assign) CGFloat selectedIndex;
+/**  选中是否还能再选*/
+@property (nonatomic, assign) CGFloat selectedEnabled;
+/**  选中文字颜色*/
+@property (nonatomic, strong) UIColor * selectedTextColor;
+/**  选中icon*/
+@property (nonatomic, strong, nullable) UIImage * selectedItemImage;
+/**  选中icon 位置 默认靠右*/
+@property (nonatomic, assign) BOOL iconPositionLeft;
+/**  选中icon 中间间距*/
+@property (nonatomic, assign) CGFloat iconSpacing;
+
+/**  不可选文字颜色*/
 @property (nonatomic, strong) UIColor * disableCellTextColor;
 /**  不可选数据*/
 @property (nonatomic, strong, nullable) NSArray<NSString *> * disAbleDataArr;

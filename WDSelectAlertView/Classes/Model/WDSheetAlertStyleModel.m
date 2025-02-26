@@ -28,6 +28,11 @@
     model.cancelTitle = @"取消";
     model.cancelTitleTextColor = [WDSelectAlertHelper toHexColor:@"#3E3E3E"];
     model.disableCellTextColor = [WDSelectAlertHelper toHexColor:@"#BEBEBE"];
+    model.selectedIndex = -1;
+    model.selectedTextColor = [WDSelectAlertHelper toHexColor:@"#3057DC"];
+    model.selectedItemImage = nil;
+    model.iconPositionLeft = NO;
+    model.iconSpacing = 8;
     return model;
 }
 

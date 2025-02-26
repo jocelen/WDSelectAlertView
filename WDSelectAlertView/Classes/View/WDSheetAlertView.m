@@ -105,11 +105,27 @@ static NSInteger const kButtonTage = 1000;
     _titleView.frame = _styleModel.layoutTitleViewFrame;
     _titleLabel.frame = _styleModel.layoutTitleFrame;
     for (int i = 0; i < _styleModel.dataArr.count; i++) {
-        UIButton * button = [self createItemButton];
+        WDSheetAlertButton * button = [self createItemButton];
         button.tag = kButtonTage + i;
         button.frame = CGRectMake(0, i * (_styleModel.cellHeight + _styleModel.lineHeight), self.frame.size.width, _styleModel.cellHeight);
         [button setTitle:_styleModel.dataArr[i] forState:UIControlStateNormal];
-        button.enabled = ![_styleModel.disAbleDataArr containsObject:_styleModel.dataArr[i]];
+        if (_styleModel.selectedIndex == i) {
+            button.enabled = _styleModel.selectedEnabled;
+            [button setTitleColor:_styleModel.selectedTextColor forState:UIControlStateNormal];
+            [button setTitleColor:_styleModel.selectedTextColor forState:UIControlStateDisabled];
+            if (_styleModel.selectedItemImage) {
+                [button setImage:_styleModel.selectedItemImage forState:UIControlStateNormal];
+                if (_styleModel.iconPositionLeft) {
+                    [button setIconInLeftWithSpacing:_styleModel.iconSpacing];
+                }
+                else {
+                    [button setIconInRightWithSpacing:_styleModel.iconSpacing];
+                }
+            }
+        }
+        else {
+            button.enabled = ![_styleModel.disAbleDataArr containsObject:_styleModel.dataArr[i]];
+        }
         [button addTarget:self action:@selector(selectAction:) forControlEvents:UIControlEventTouchUpInside];
         [self.scrollView addSubview:button];
     }
@@ -180,7 +196,9 @@ static NSInteger const kButtonTage = 1000;
 -(UIButton *)cancelButton
 {
     if (!_cancelButton) {
-        UIButton * button = [self createItemButton];
+        UIButton * button = [UIButton buttonWithType:UIButtonTypeSystem];
+        button.backgroundColor = _styleModel.cellBackgroudColor;
+        button.titleLabel.font = [UIFont fontWithName:@"PingFangSC-Regular" size:16];
         [button setTitle:_styleModel.cancelTitle forState:UIControlStateNormal];
         [button setTitleColor:_styleModel.cancelTitleTextColor forState:UIControlStateNormal];
         [button setTitleEdgeInsets:UIEdgeInsetsMake(-_styleModel.safeEdgeBottomMargin/2, 0, 0, 0)];
@@ -191,9 +209,9 @@ static NSInteger const kButtonTage = 1000;
 }
 
 
--(UIButton *)createItemButton
+-(WDSheetAlertButton *)createItemButton
 {
-    UIButton * button = [UIButton buttonWithType:UIButtonTypeSystem];
+    WDSheetAlertButton * button = [WDSheetAlertButton buttonWithType:UIButtonTypeCustom];
     button.backgroundColor = _styleModel.cellBackgroudColor;
     button.titleLabel.font = [UIFont fontWithName:@"PingFangSC-Regular" size:16];
     [button setTitleColor:_styleModel.cellTextColor forState:UIControlStateNormal];
@@ -201,6 +219,47 @@ static NSInteger const kButtonTage = 1000;
     return button;
 }
 
+
+@end
+
+@implementation WDSheetAlertButton
+
+- (void)setIconInLeftWithSpacing:(CGFloat)Spacing;
+{
+    self.titleEdgeInsets = (UIEdgeInsets){
+        .top    = 0,
+        .left   = Spacing/2,
+        .bottom = 0,
+        .right  = -Spacing/2,
+    };
+    
+    self.imageEdgeInsets = (UIEdgeInsets){
+        .top    = 0,
+        .left   = -Spacing/2,
+        .bottom = 0,
+        .right  = Spacing/2,
+    };
+}
+
+- (void)setIconInRightWithSpacing:(CGFloat)Spacing;
+{
+    CGFloat img_W = self.imageView.frame.size.width;
+    CGFloat tit_W = self.titleLabel.frame.size.width;
+    
+    self.titleEdgeInsets = (UIEdgeInsets){
+        .top    = 0,
+        .left   = - (img_W + Spacing / 2),
+        .bottom = 0,
+        .right  = (img_W + Spacing / 2),
+    };
+    
+    self.imageEdgeInsets = (UIEdgeInsets){
+        .top    = 0,
+        .left   = (tit_W + Spacing / 2),
+        .bottom = 0,
+        .right  = - (tit_W + Spacing / 2),
+    };
+}
 
 @end
 
