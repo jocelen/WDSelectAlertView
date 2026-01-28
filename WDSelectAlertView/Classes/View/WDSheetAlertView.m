@@ -213,6 +213,8 @@ static NSInteger const kButtonTage = 1000;
 {
     WDSheetAlertButton * button = [WDSheetAlertButton buttonWithType:UIButtonTypeCustom];
     button.backgroundColor = _styleModel.cellBackgroudColor;
+    button.titleLabel.numberOfLines = _styleModel.cellNumberOfLines;
+    button.edgeInsets = _styleModel.cellEdgeInsets;
     button.titleLabel.font = [UIFont fontWithName:@"PingFangSC-Regular" size:16];
     [button setTitleColor:_styleModel.cellTextColor forState:UIControlStateNormal];
     [button setTitleColor:_styleModel.disableCellTextColor forState:UIControlStateDisabled];
@@ -224,13 +226,19 @@ static NSInteger const kButtonTage = 1000;
 
 @implementation WDSheetAlertButton
 
+-(void)setEdgeInsets:(UIEdgeInsets)edgeInsets;
+{
+    _edgeInsets = edgeInsets;
+    self.titleEdgeInsets = edgeInsets;
+}
+
 - (void)setIconInLeftWithSpacing:(CGFloat)Spacing;
 {
     self.titleEdgeInsets = (UIEdgeInsets){
-        .top    = 0,
-        .left   = Spacing/2,
-        .bottom = 0,
-        .right  = -Spacing/2,
+        .top    = _edgeInsets.top,
+        .left   = _edgeInsets.left + Spacing/2,
+        .bottom = _edgeInsets.bottom,
+        .right  = _edgeInsets.right - Spacing/2,
     };
     
     self.imageEdgeInsets = (UIEdgeInsets){
@@ -247,10 +255,10 @@ static NSInteger const kButtonTage = 1000;
     CGFloat tit_W = self.titleLabel.frame.size.width;
     
     self.titleEdgeInsets = (UIEdgeInsets){
-        .top    = 0,
-        .left   = - (img_W + Spacing / 2),
-        .bottom = 0,
-        .right  = (img_W + Spacing / 2),
+        .top    = _edgeInsets.top,
+        .left   = _edgeInsets.left - (img_W + Spacing / 2),
+        .bottom = _edgeInsets.bottom,
+        .right  = _edgeInsets.right + (img_W + Spacing / 2),
     };
     
     self.imageEdgeInsets = (UIEdgeInsets){

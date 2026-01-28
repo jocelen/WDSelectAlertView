@@ -18,6 +18,12 @@ NS_ASSUME_NONNULL_BEGIN
 /**  cell高度 默认60*/
 @property (nonatomic, assign) CGFloat cellHeight;
 
+/**  cell文字行数 默认1 */
+@property (nonatomic, assign) NSInteger cellNumberOfLines;
+
+/**  cell留白边距  */
+@property (nonatomic, assign) UIEdgeInsets cellEdgeInsets;
+
 /**  背景 颜色*/
 @property (nonatomic, strong) UIColor * backgroudColor;
 
@@ -37,8 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) NSString * title;
 
 /**  标题 属性*/
-@property (nonatomic, assign) CGFloat titleTopPadding;
-@property (nonatomic, assign) CGFloat titleLeftPadding;
+@property (nonatomic, assign) UIEdgeInsets titleEdgeInsets;
 @property (nonatomic, strong) UIFont * titleFont;
 @property (nonatomic, strong) UIColor * titleColor;
 @property (nonatomic, assign) NSInteger titleNumberOfLines;

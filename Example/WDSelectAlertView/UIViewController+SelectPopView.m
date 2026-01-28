@@ -123,6 +123,7 @@
     model.iconSpacing = 14;
     model.selectedItemImage = [UIImage imageNamed:@"icon_selected"];
     model.selectedEnabled = YES;
+    model.cellNumberOfLines = 2;
     
     WDSheetAlertView * content = [[WDSheetAlertView alloc] initWithModel:model];
     content.frame = CGRectMake(0, 0, UIScreen.mainScreen.bounds.size.width, 0);

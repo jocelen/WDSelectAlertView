@@ -31,6 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface WDSheetAlertButton : UIButton
+@property (nonatomic, assign) UIEdgeInsets edgeInsets;
 - (void)setIconInLeftWithSpacing:(CGFloat)Spacing;
 - (void)setIconInRightWithSpacing:(CGFloat)Spacing;
 @end

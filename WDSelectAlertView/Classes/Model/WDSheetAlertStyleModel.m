@@ -14,10 +14,11 @@
 +(WDSheetAlertStyleModel *)defaultStyle;
 {
     WDSheetAlertStyleModel * model = [[WDSheetAlertStyleModel alloc] init];
-    model.titleTopPadding = 12;
-    model.titleLeftPadding = 14;
+    model.titleEdgeInsets = UIEdgeInsetsMake(12, 14, 12, 14);
     model.maxShowCount = 6;
     model.cellHeight = [WDSelectAlertHelper adaptScreenSize:60];
+    model.cellNumberOfLines = 1;
+    model.cellEdgeInsets = UIEdgeInsetsMake(4, 14, 4, 14);
     model.lineHeight = [WDSelectAlertHelper adaptScreenSize:0.7];
     model.titleFont = [UIFont fontWithName:@"PingFangSC-Medium" size: 14];
     model.titleColor = [WDSelectAlertHelper toHexColor:@"#7B7B7B"];
@@ -40,9 +41,9 @@
 {
     CGRect frame = CGRectZero;
     if (self.title.length) {
-        CGSize maxSize = CGSizeMake(UIScreen.mainScreen.bounds.size.width - self.titleLeftPadding * 2, CGFLOAT_MAX);
+        CGSize maxSize = CGSizeMake(UIScreen.mainScreen.bounds.size.width - (self.titleEdgeInsets.left + self.titleEdgeInsets.right), CGFLOAT_MAX);
         CGFloat layoutTitleHight = [WDSelectAlertHelper getFontSize:self.title Font:self.titleFont Paragraph:nil Size:maxSize].height;
-        frame = CGRectMake(self.titleTopPadding, self.titleLeftPadding, maxSize.width, layoutTitleHight);
+        frame = CGRectMake(self.titleEdgeInsets.top, self.titleEdgeInsets.left, maxSize.width, layoutTitleHight);
     }
     return frame;
 }
@@ -51,7 +52,7 @@
 {
     CGRect frame = self.layoutTitleFrame;
     if (frame.size.height > 0) {
-        frame = CGRectMake(0, 0, frame.size.width + self.titleLeftPadding*2, frame.size.height + self.titleTopPadding*2);
+        frame = CGRectMake(0, 0, frame.size.width + (self.titleEdgeInsets.left + self.titleEdgeInsets.right), frame.size.height + (self.titleEdgeInsets.top + self.titleEdgeInsets.bottom));
     }
     return frame;
 }
