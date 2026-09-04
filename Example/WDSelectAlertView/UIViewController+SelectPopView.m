@@ -107,7 +107,6 @@
     if (!selectItems || [selectItems isKindOfClass:[NSArray class]] == NO || selectItems.count == 0) { return;}
     
     WDAlertWindowStyleModel * style = [WDAlertWindowStyleModel defaultStyle];
-    style.isGroundGlass = YES;
     style.isGroundGlass = NO;
     style.position = BCAlertViewPositionTypeBottom;
     
@@ -151,7 +150,6 @@
 -(void)showDateSelect:(NSDate * _Nullable)date minimumDate:(NSDate * _Nullable)min maximumDate:(NSDate * _Nullable)max style:(WDDateAlertAlertStyle)format changeAction:(void(^)(NSDate * date))changeHandler selectAction:(void(^)(BOOL isSure, NSDate * date))handler;
 {
     WDAlertWindowStyleModel * style = [WDAlertWindowStyleModel defaultStyle];
-    style.isGroundGlass = YES;
     style.isGroundGlass = NO;
     style.position = BCAlertViewPositionTypeBottom;
     
@@ -193,7 +191,6 @@
 -(void)showDateParagraphSelect:(NSArray <NSString *> * _Nullable)selectDateArr style:(WDDateIntervalAlertStyle)format selectAction:(void(^)(BOOL isSure, NSString * begin, NSString * end))handler;
 {
     WDAlertWindowStyleModel * style = [WDAlertWindowStyleModel defaultStyle];
-    style.isGroundGlass = YES;
     style.isGroundGlass = NO;
     style.position = BCAlertViewPositionTypeBottom;
     

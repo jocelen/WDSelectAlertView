@@ -104,6 +104,11 @@ static NSInteger const kButtonTage = 1000;
 {
     _titleView.frame = _styleModel.layoutTitleViewFrame;
     _titleLabel.frame = _styleModel.layoutTitleFrame;
+    
+    for (UIView *sub in _scrollView.subviews.copy) {
+        [sub removeFromSuperview];
+    }
+    
     for (int i = 0; i < _styleModel.dataArr.count; i++) {
         WDSheetAlertButton * button = [self createItemButton];
         button.tag = kButtonTage + i;
@@ -198,7 +203,7 @@ static NSInteger const kButtonTage = 1000;
     if (!_cancelButton) {
         UIButton * button = [UIButton buttonWithType:UIButtonTypeSystem];
         button.backgroundColor = _styleModel.cellBackgroudColor;
-        button.titleLabel.font = [UIFont fontWithName:@"PingFangSC-Regular" size:16];
+        button.titleLabel.font = [UIFont systemFontOfSize:16];
         [button setTitle:_styleModel.cancelTitle forState:UIControlStateNormal];
         [button setTitleColor:_styleModel.cancelTitleTextColor forState:UIControlStateNormal];
         [button setTitleEdgeInsets:UIEdgeInsetsMake(-_styleModel.safeEdgeBottomMargin/2, 0, 0, 0)];
@@ -215,7 +220,7 @@ static NSInteger const kButtonTage = 1000;
     button.backgroundColor = _styleModel.cellBackgroudColor;
     button.titleLabel.numberOfLines = _styleModel.cellNumberOfLines;
     button.edgeInsets = _styleModel.cellEdgeInsets;
-    button.titleLabel.font = [UIFont fontWithName:@"PingFangSC-Regular" size:16];
+    button.titleLabel.font = [UIFont systemFontOfSize:16];
     [button setTitleColor:_styleModel.cellTextColor forState:UIControlStateNormal];
     [button setTitleColor:_styleModel.disableCellTextColor forState:UIControlStateDisabled];
     return button;
@@ -251,6 +256,8 @@ static NSInteger const kButtonTage = 1000;
 
 - (void)setIconInRightWithSpacing:(CGFloat)Spacing;
 {
+    [self layoutIfNeeded];
+    
     CGFloat img_W = self.imageView.frame.size.width;
     CGFloat tit_W = self.titleLabel.frame.size.width;
     

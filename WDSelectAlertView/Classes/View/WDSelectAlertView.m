@@ -8,7 +8,7 @@
 
 #import "WDSelectAlertView.h"
 
-static NSString * const kSelectAlertActionTag = @"ActionEvent%d";
+static NSString * const kSelectAlertActionTag = @"actionevent%d";
 
 
 @interface WDSelectAlertView ()<UITextViewDelegate>
@@ -74,6 +74,14 @@ static NSString * const kSelectAlertActionTag = @"ActionEvent%d";
     CGFloat leftPadding = self.styleModel.leftPadding;
 
     _titleLabel.frame = self.styleModel.layoutTitleFrame;
+    
+    if (self.styleModel.hasTitle) {
+        _titleLine.frame = CGRectMake(0, CGRectGetMaxY(_titleLabel.frame), width_max, lineSapce);
+        _titleLine.hidden = NO;
+    } else {
+        _titleLine.hidden = YES;
+    }
+    
     /// 内容
     CGFloat contentTopPadding = leftPadding * (self.styleModel.hasTitle ? 0 : 2);
     
@@ -166,21 +174,23 @@ static NSString * const kSelectAlertActionTag = @"ActionEvent%d";
     /// 高亮
     for (int i = 0; i < self.styleModel.highlightArr.count; i++) {
         NSString * item = self.styleModel.highlightArr[i];
+        NSRange range = [self.styleModel.content rangeOfString:item];
+        if (range.location == NSNotFound) { continue; }
         NSMutableDictionary * dic = [NSMutableDictionary dictionary];
         [dic setValue:self.styleModel.highlightColor forKey:NSForegroundColorAttributeName];
         [dic setValue:self.styleModel.highlightFont forKey:NSFontAttributeName];
-        
-        [attributeStr setAttributes:dic range:[self.styleModel.content rangeOfString:item]];
+        [attributeStr addAttributes:dic range:range];
     }
     
     /// 链接
     for (int i = 0; i < self.styleModel.linkArr.count; i++) {
         NSString * item = self.styleModel.linkArr[i];
+        NSRange range = [self.styleModel.content rangeOfString:item];
+        if (range.location == NSNotFound) { continue; }
         NSMutableDictionary * dic = [NSMutableDictionary dictionary];
         [dic setValue:self.styleModel.linkFont forKey:NSFontAttributeName];
         [dic setValue:[NSString stringWithFormat:@"%@://",[NSString stringWithFormat:kSelectAlertActionTag,i]] forKey:NSLinkAttributeName];
-        
-        [attributeStr setAttributes:dic range:[self.styleModel.content rangeOfString:item]];
+        [attributeStr addAttributes:dic range:range];
     }
     
     return attributeStr;
@@ -202,7 +212,8 @@ static NSString * const kSelectAlertActionTag = @"ActionEvent%d";
         interaction == UITextItemInteractionPresentActions) {
         __weak typeof(self) weakSelf = self;
         for (int i = 0; i < self.styleModel.linkArr.count; i++) {
-            if ([URL.scheme isEqualToString:[NSString stringWithFormat:kSelectAlertActionTag,i]]) {
+            NSString * target = [NSString stringWithFormat:kSelectAlertActionTag, i];
+            if ([URL.scheme caseInsensitiveCompare:target] == NSOrderedSame) {
                 if (weakSelf.clickLinkAction) {
                     weakSelf.clickLinkAction(i);
                     return NO;
@@ -217,7 +228,8 @@ static NSString * const kSelectAlertActionTag = @"ActionEvent%d";
 - (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange {
     __weak typeof(self) weakSelf = self;
     for (int i = 0; i < self.styleModel.linkArr.count; i++) {
-        if ([URL.scheme isEqualToString:[NSString stringWithFormat:kSelectAlertActionTag,i]]) {
+        NSString * target = [NSString stringWithFormat:kSelectAlertActionTag, i];
+        if ([URL.scheme caseInsensitiveCompare:target] == NSOrderedSame) {
             if (weakSelf.clickLinkAction) {
                 weakSelf.clickLinkAction(i);
                 return NO;

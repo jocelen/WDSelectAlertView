@@ -46,6 +46,10 @@
         return  UIColor.clearColor;
     }
     
+    if (hexColor.length < 6) {
+        return UIColor.clearColor;
+    }
+    
     unsigned red,green,blue;
     NSRange range;
     range.length = 2;

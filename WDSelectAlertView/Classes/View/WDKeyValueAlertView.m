@@ -162,6 +162,10 @@
 
 
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+    _selectIndex = row;
+    // 刷新组件以更新高亮状态
+    [pickerView reloadComponent:component];
+    
     if (_didSelectDate) {
         _didSelectDate(row);
     }
@@ -174,7 +178,7 @@
     if (!_cancelButton) {
         UIButton * button = [UIButton buttonWithType:UIButtonTypeSystem];
         button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-        button.titleLabel.font = [UIFont fontWithName:@"PingFangSC-Regular" size:18];
+        button.titleLabel.font = [UIFont systemFontOfSize:18];
         [button setTitle:_styleModel.cancelTitle forState:UIControlStateNormal];
         [button setTitleColor:_styleModel.cancelTitleColor forState:UIControlStateNormal];
         [button addTarget:self action:@selector(clickAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -188,7 +192,7 @@
     if (!_sureButton) {
         UIButton * button = [UIButton buttonWithType:UIButtonTypeSystem];
         button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
-        button.titleLabel.font = [UIFont fontWithName:@"PingFangSC-Heavy" size:18];
+        button.titleLabel.font = [UIFont boldSystemFontOfSize:18];
         [button setTitle:_styleModel.sureTitle forState:UIControlStateNormal];
         [button setTitleColor:_styleModel.sureTitleColor forState:UIControlStateNormal];
         [button setTitleColor:_styleModel.sureTitleDisableColor forState:UIControlStateDisabled];

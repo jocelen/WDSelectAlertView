@@ -43,7 +43,7 @@
     if (self.title.length) {
         CGSize maxSize = CGSizeMake(UIScreen.mainScreen.bounds.size.width - (self.titleEdgeInsets.left + self.titleEdgeInsets.right), CGFLOAT_MAX);
         CGFloat layoutTitleHight = [WDSelectAlertHelper getFontSize:self.title Font:self.titleFont Paragraph:nil Size:maxSize].height;
-        frame = CGRectMake(self.titleEdgeInsets.top, self.titleEdgeInsets.left, maxSize.width, layoutTitleHight);
+        frame = CGRectMake(self.titleEdgeInsets.left, self.titleEdgeInsets.top, maxSize.width, layoutTitleHight);
     }
     return frame;
 }

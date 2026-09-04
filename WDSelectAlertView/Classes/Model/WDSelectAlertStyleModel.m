@@ -68,7 +68,7 @@
                                  NSFontAttributeName:self.contentFont,
                                  NSParagraphStyleAttributeName:paragraphStyle,
                                  };
-    NSMutableAttributedString *attributeStr = [[NSMutableAttributedString alloc] initWithString:self.content attributes:attributes];
+    NSMutableAttributedString *attributeStr = [[NSMutableAttributedString alloc] initWithString:self.content ?: @"" attributes:attributes];
     return attributeStr;
 }
 
