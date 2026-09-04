@@ -60,7 +60,7 @@
 -(void)loadData {
     _titleArr = @[@"自定义弹框",@"确认弹框", @"选项弹框", @"时间选择", @"时段选择", @"其他选择"];
     _dataArr = @[@[@"上-模糊",@"中-点击取消",@"下"],
-                 @[@"单选",@"多选",@"多行多选",@"富文本多选"],
+                 @[@"单选",@"多选",@"多行多选",@"富文本多选",@"自定义"],
                  @[@"选项",@"选项(有标题)",@"选项(选中第一个)",@"选项(超多行)",],
                  @[@"时间YYYYMMDD",@"时间YYYYMM",@"时间YYYY",],
                  @[@"时段",],
@@ -198,9 +198,10 @@
             model.linkFont = [UIFont systemFontOfSize:20];
             model.linkColor = UIColor.greenColor;
 
-            model.sureTitle = @"追求✅";
+            model.sureTitle = @"超长标题超长标题追求✅";
             model.sureTitleColor = UIColor.yellowColor;
             model.sureTitleFont = [UIFont systemFontOfSize:30];
+            model.sureTitleAdjusts = YES;
             
             model.cancelTitle = @"放弃❌";
             model.cancelTitleColor = UIColor.redColor;

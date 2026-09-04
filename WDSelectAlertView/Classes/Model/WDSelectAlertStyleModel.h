@@ -77,7 +77,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) UIColor * sureTitleColor;
 /**  确定按钮 字体*/
 @property (nonatomic, strong) UIFont * sureTitleFont;
-
+/**  是否缩放 默认否*/
+@property (nonatomic, assign) BOOL sureTitleAdjusts;
+/**  最小缩放比例 默认0*/
+@property(nonatomic) CGFloat sureTitleMinimumScaleFactor;
 
 /**  取消按钮文本 默认 ‘取消’*/
 @property (nonatomic, copy) NSString * cancelTitle;
@@ -85,7 +88,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) UIColor * cancelTitleColor;
 /**  取消按钮 字体*/
 @property (nonatomic, strong) UIFont * cancelTitleFont;
-
+/**  是否缩放 默认否*/
+@property (nonatomic, assign) BOOL cancelTitleAdjusts;
+/**  最小缩放比例 默认0*/
+@property(nonatomic) CGFloat cancelTitleMinimumScaleFactor;
 
 /**  高亮文本 颜色*/
 @property (nonatomic, strong) UIColor * highlightColor;

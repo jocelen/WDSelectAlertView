@@ -315,6 +315,11 @@ static NSString * const kSelectAlertActionTag = @"actionevent%d";
         button.backgroundColor = self.styleModel.backgroudColor;
         [button setTitleColor:self.styleModel.sureTitleColor forState:UIControlStateNormal];
         button.titleLabel.font = self.styleModel.sureTitleFont;
+        if (self.styleModel.sureTitleAdjusts) {
+            button.titleLabel.adjustsFontSizeToFitWidth = self.styleModel.sureTitleAdjusts;
+            button.titleLabel.minimumScaleFactor = self.styleModel.sureTitleMinimumScaleFactor;
+            button.titleLabel.lineBreakMode = NSLineBreakByClipping;
+        }
         [button setTitle:self.styleModel.sureTitle forState:UIControlStateNormal];
         [button addTarget:self action:@selector(selectAction:) forControlEvents:UIControlEventTouchUpInside];
         _sureButton = button;
@@ -331,6 +336,11 @@ static NSString * const kSelectAlertActionTag = @"actionevent%d";
         [button setTitleColor:self.styleModel.cancelTitleColor forState:UIControlStateNormal];
         [button setTitle:self.styleModel.cancelTitle forState:UIControlStateNormal];
         button.titleLabel.font = self.styleModel.cancelTitleFont;
+        if (self.styleModel.cancelTitleAdjusts) {
+            button.titleLabel.adjustsFontSizeToFitWidth = self.styleModel.cancelTitleAdjusts;
+            button.titleLabel.minimumScaleFactor = self.styleModel.cancelTitleMinimumScaleFactor;
+            button.titleLabel.lineBreakMode = NSLineBreakByClipping;
+        }
         [button addTarget:self action:@selector(selectAction:) forControlEvents:UIControlEventTouchUpInside];
         _cancelButton = button;
     }

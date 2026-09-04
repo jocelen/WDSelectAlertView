@@ -41,10 +41,12 @@
     model.sureTitle = @"确定";
     model.sureTitleColor = [WDSelectAlertHelper toHexColor:@"#DC3045"];
     model.sureTitleFont = [UIFont fontWithName:@"PingFangSC-Heavy" size:18];
+    model.sureTitleAdjusts = NO;
     
     model.cancelTitle = @"取消";
     model.cancelTitleColor = [WDSelectAlertHelper toHexColor:@"#7B7B7B"];
     model.cancelTitleFont = [UIFont fontWithName:@"PingFangSC-Regular" size:18];
+    model.cancelTitleAdjusts = NO;
     
     model.highlightColor = [WDSelectAlertHelper toHexColor:@"#3E3E3E"];
     model.highlightFont = model.contentFont;
