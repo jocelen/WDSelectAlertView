@@ -1,322 +1,304 @@
 //
 //  WDKeyValueAlertView.m
-//  BOC
+//  WDSelectAlertView
 //
 //  Created by dzkj on 2021/1/6.
 //  Copyright © 2021 mimiao. All rights reserved.
 //
 
 #import "WDKeyValueAlertView.h"
+#import "WDSelectAlertHelper.h"
 
-@interface WDKeyValueAlertView()<UIPickerViewDelegate,UIPickerViewDataSource>
+@interface WDKeyValueAlertView () <UIPickerViewDelegate, UIPickerViewDataSource>
 
-/**  取消*/
-@property (nonatomic, strong) UIButton * cancelButton;
-
-/**  确定*/
-@property (nonatomic, strong) UIButton * sureButton;
-
-/**  picker*/
-@property (nonatomic, strong) UIPickerView * picker;
+@property (nonatomic, strong) UIVisualEffectView *backgroundEffectView;
+@property (nonatomic, strong) UIButton *cancelButton;
+@property (nonatomic, strong) UIButton *sureButton;
+@property (nonatomic, strong) UIView *toolbarLine;
+@property (nonatomic, strong) UIPickerView *picker;
 
 @end
 
 @implementation WDKeyValueAlertView
 
-
-// MARK: -  life cycle
-
--(instancetype)initWithModel:(WDKeyValueAlertStyleModel *)model;
-{
+- (instancetype)initWithModel:(WDKeyValueAlertStyleModel *)model {
     if (self = [super initWithFrame:CGRectZero]) {
-        _styleModel = model;
+        _styleModel = model ?: [WDKeyValueAlertStyleModel defaultStyle];
         [self loadConfig];
         [self addSubviews];
-        [self loadData];
+        [self syncInitialSelection];
     }
     return self;
 }
 
--(void)awakeFromNib
-{
+- (void)awakeFromNib {
     [super awakeFromNib];
+    if (!_styleModel) {
+        _styleModel = [WDKeyValueAlertStyleModel defaultStyle];
+    }
     [self loadConfig];
     [self addSubviews];
-    [self loadData];
+    [self syncInitialSelection];
 }
 
+- (void)safeAreaInsetsDidChange {
+    [super safeAreaInsetsDidChange];
+    [self setNeedsLayout];
+}
 
--(void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
-    CGFloat buttonHeight = 50;
-    CGSize buttonSize = CGSizeMake(90, buttonHeight);
-    
-    _cancelButton.frame = CGRectMake(14, 0, buttonSize.width, buttonSize.height);
-    _sureButton.frame = CGRectMake(self.frame.size.width - buttonSize.width - 14, 0, buttonSize.width, buttonSize.height);
-    
-    _picker.frame = CGRectMake(0, buttonHeight, self.frame.size.width, self.frame.size.height - buttonHeight);
+
+    self.backgroundEffectView.frame = self.bounds;
+
+    CGFloat width = CGRectGetWidth(self.bounds);
+    CGFloat height = CGRectGetHeight(self.bounds);
+    CGFloat buttonHeight = 50.0;
+    CGSize buttonSize = CGSizeMake(90.0, buttonHeight);
+    CGFloat lineHeight = 1.0 / MAX([WDSelectAlertHelper activeWindowScene].screen.scale, 2.0);
+    CGFloat safeBottom = [WDSelectAlertHelper safeAreaInsetsForView:self].bottom;
+
+    self.cancelButton.frame = CGRectMake(16.0, 0, buttonSize.width, buttonSize.height);
+    self.sureButton.frame = CGRectMake(MAX(16.0, width - buttonSize.width - 16.0), 0, buttonSize.width, buttonSize.height);
+    self.toolbarLine.frame = CGRectMake(0, buttonHeight - lineHeight, width, lineHeight);
+
+    CGFloat pickerHeight = MAX(0, height - buttonHeight - safeBottom);
+    self.picker.frame = CGRectMake(0, buttonHeight, width, pickerHeight);
 }
 
-// MARK: -  private methods
+#pragma mark - Private Methods
 
-// 加载初始配置
--(void)loadConfig {
+- (NSInteger)totalRowCount {
+    return (NSInteger)MAX(self.styleModel.keyArr.count, self.styleModel.valueArr.count);
+}
+
+- (void)loadConfig {
+    self.backgroundColor = UIColor.clearColor;
     _selectIndex = -1;
-    self.backgroundColor = _styleModel.backgroudColor;
 }
 
-// 添加view
--(void)addSubviews {
-    [self addSubview:self.cancelButton];
-    [self addSubview:self.sureButton];
-    [self addSubview:self.picker];
+- (void)addSubviews {
+    [self addSubview:self.backgroundEffectView];
+    UIView *container = self.backgroundEffectView.contentView;
+    [container addSubview:self.cancelButton];
+    [container addSubview:self.sureButton];
+    [container addSubview:self.toolbarLine];
+    [container addSubview:self.picker];
 }
 
-// 加载数据
--(void)loadData {
-
-}
-
--(void)clickAction:(UIButton *)sender
-{
-    if (_didClickButton) {
-        BOOL isSure = [sender isEqual:_sureButton];
-        _didClickButton(isSure,[self.picker selectedRowInComponent:0]);
+- (void)syncInitialSelection {
+    CACornerMask topCorners = kCALayerMinXMinYCorner | kCALayerMaxXMinYCorner;
+    [WDSelectAlertHelper applyMaterialStyle:self.styleModel.materialStyle
+                            backgroundColor:self.styleModel.backgroundColor
+                       hasCustomBackground:self.styleModel.hasCustomBackgroundColor
+                               cornerRadius:self.styleModel.cornerRadius
+                              maskedCorners:topCorners
+                               toEffectView:self.backgroundEffectView];
+    self.picker.backgroundColor = (self.styleModel.materialStyle == WDAlertMaterialStyleSolid)
+                                      ? (self.styleModel.pickerBackgroundColor ?: UIColor.secondarySystemGroupedBackgroundColor)
+                                      : UIColor.clearColor;
+    NSInteger rows = [self totalRowCount];
+    self.sureButton.enabled = (rows > 0);
+    if (rows > 0 && _selectIndex < 0) {
+        self.selectIndex = 0;
+    } else if (rows == 0) {
+        _selectIndex = -1;
     }
 }
 
-//-(void)dateChanged:(BCDateIntervalPickView *)sender value:(NSString *)value;
-//{
-//    if ([_beginPicker.currentValue isEqualToString:_endPicker.currentValue])
-//    {
-//        if ([sender isEqual:_beginPicker])
-//        {
-//            [_endPicker nextStep];
-//        }
-//        else
-//        {
-//             [_beginPicker previousStep];
-//        }
-//    }
-//    else
-//    {
-//        if (_didSelectDate) {
-//            _didSelectDate(_beginPicker.currentValue,_endPicker.currentValue);
-//        }
-//    }
-//
-//}
-
-// MARK: -  public methods
--(void)setSelectIndex:(NSInteger)selectIndex
-{
-    _selectIndex = selectIndex;
-    [self.picker selectRow:_selectIndex inComponent:0 animated:NO];
+- (void)clickAction:(UIButton *)sender {
+    if (self.didClickButton) {
+        BOOL isSure = (sender == self.sureButton);
+        NSInteger rows = [self totalRowCount];
+        NSInteger idx = (rows > 0) ? [self.picker selectedRowInComponent:0] : -1;
+        self.didClickButton(isSure, idx);
+    }
 }
 
+#pragma mark - Public Methods
 
-// MARK: -  UIPickerViewDelegate
-- (NSInteger)numberOfComponentsInPickerView:(nonnull UIPickerView *)pickerView {
+- (void)setSelectIndex:(NSInteger)selectIndex {
+    NSInteger rows = [self totalRowCount];
+    if (rows <= 0) {
+        _selectIndex = -1;
+        self.sureButton.enabled = NO;
+        return;
+    }
+    self.sureButton.enabled = YES;
+    NSInteger clamped = MIN(MAX(0, selectIndex), rows - 1);
+    _selectIndex = clamped;
+    [self.picker reloadAllComponents];
+    [self.picker selectRow:clamped inComponent:0 animated:NO];
+}
+
+#pragma mark - UIPickerViewDataSource & Delegate
+
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
     return 1;
 }
 
 - (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component {
-    return 44;
+    return 44.0;
 }
 
-- (NSInteger)pickerView:(nonnull UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
-    return MAX(_styleModel.keyArr.count, _styleModel.valueArr.count);
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+    return [self totalRowCount];
 }
 
-- (nullable NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
-    return nil;
-}
+- (UIView *)pickerView:(UIPickerView *)pickerView
+            viewForRow:(NSInteger)row
+          forComponent:(NSInteger)component
+           reusingView:(nullable UIView *)view {
+    WDKeyValueAlertViewCell *cell = [view isKindOfClass:[WDKeyValueAlertViewCell class]]
+                                        ? (WDKeyValueAlertViewCell *)view
+                                        : [[WDKeyValueAlertViewCell alloc] init];
+    cell.textColor = self.styleModel.textColor;
+    cell.selectTextColor = self.styleModel.selectTextColor;
 
-- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view {
-    //设置分割线的颜色
-    for(UIView *singleLine in pickerView.subviews)
-    {
-        if (singleLine.frame.size.height < 1)
-        {
-            singleLine.backgroundColor = _styleModel.lineSpaceColor;
-        }
-    }
-    
-    WDKeyValueAlertViewCell * cell = (WDKeyValueAlertViewCell *)view;
-    if (view == nil) {
-        cell = [[WDKeyValueAlertViewCell alloc] init];
-        cell.textColor = _styleModel.textColor;
-        cell.selectTextColor = _styleModel.selectTextColor;
+    BOOL hasKeys = (self.styleModel.keyArr.count > 0);
+    BOOL hasValues = (self.styleModel.valueArr.count > 0);
+    cell.showLeft = hasKeys;
+    cell.showRight = hasValues;
+
+    if (hasKeys) {
+        cell.leftLabel.text = ((NSUInteger)row < self.styleModel.keyArr.count) ? self.styleModel.keyArr[(NSUInteger)row] : @"";
+    } else {
+        cell.leftLabel.text = nil;
     }
 
-    if (_styleModel.keyArr.count) {
-        cell.leftLabel.text = (row < _styleModel.keyArr.count) ? _styleModel.keyArr[row] : @"";
+    if (hasValues) {
+        cell.rightLabel.text = ((NSUInteger)row < self.styleModel.valueArr.count) ? self.styleModel.valueArr[(NSUInteger)row] : @"";
+    } else {
+        cell.rightLabel.text = nil;
     }
-    if (_styleModel.valueArr.count) {
-        cell.rightLabel.text = (row < _styleModel.valueArr.count) ? _styleModel.valueArr[row] : @"";
-    }
-    cell.isSelect = (row == _selectIndex);
+
+    cell.isSelect = (row == self.selectIndex);
     return cell;
 }
 
-
--(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     _selectIndex = row;
-    // 刷新组件以更新高亮状态
     [pickerView reloadComponent:component];
-    
-    if (_didSelectDate) {
-        _didSelectDate(row);
+    if (self.didSelectDate) {
+        self.didSelectDate(row);
     }
 }
 
+#pragma mark - Getters
 
-// MARK: -  getters and setters
--(UIButton *)cancelButton
-{
+- (UIVisualEffectView *)backgroundEffectView {
+    if (!_backgroundEffectView) {
+        _backgroundEffectView = [[UIVisualEffectView alloc] initWithEffect:nil];
+    }
+    return _backgroundEffectView;
+}
+
+- (UIButton *)cancelButton {
     if (!_cancelButton) {
-        UIButton * button = [UIButton buttonWithType:UIButtonTypeSystem];
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
         button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-        button.titleLabel.font = [UIFont systemFontOfSize:18];
-        [button setTitle:_styleModel.cancelTitle forState:UIControlStateNormal];
-        [button setTitleColor:_styleModel.cancelTitleColor forState:UIControlStateNormal];
+        button.titleLabel.font = [UIFont systemFontOfSize:17 weight:UIFontWeightRegular];
+        [button setTitle:self.styleModel.cancelTitle forState:UIControlStateNormal];
+        [button setTitleColor:self.styleModel.cancelTitleColor forState:UIControlStateNormal];
         [button addTarget:self action:@selector(clickAction:) forControlEvents:UIControlEventTouchUpInside];
         _cancelButton = button;
     }
     return _cancelButton;
 }
 
--(UIButton *)sureButton
-{
+- (UIButton *)sureButton {
     if (!_sureButton) {
-        UIButton * button = [UIButton buttonWithType:UIButtonTypeSystem];
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
         button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
-        button.titleLabel.font = [UIFont boldSystemFontOfSize:18];
-        [button setTitle:_styleModel.sureTitle forState:UIControlStateNormal];
-        [button setTitleColor:_styleModel.sureTitleColor forState:UIControlStateNormal];
-        [button setTitleColor:_styleModel.sureTitleDisableColor forState:UIControlStateDisabled];
+        button.titleLabel.font = [UIFont systemFontOfSize:17 weight:UIFontWeightSemibold];
+        [button setTitle:self.styleModel.sureTitle forState:UIControlStateNormal];
+        [button setTitleColor:self.styleModel.sureTitleColor forState:UIControlStateNormal];
+        [button setTitleColor:self.styleModel.sureTitleDisableColor forState:UIControlStateDisabled];
         [button addTarget:self action:@selector(clickAction:) forControlEvents:UIControlEventTouchUpInside];
         _sureButton = button;
     }
     return _sureButton;
 }
 
--(UIPickerView *)picker
-{
+- (UIView *)toolbarLine {
+    if (!_toolbarLine) {
+        _toolbarLine = [[UIView alloc] init];
+        _toolbarLine.backgroundColor = self.styleModel.lineSpaceColor;
+    }
+    return _toolbarLine;
+}
+
+- (UIPickerView *)picker {
     if (!_picker) {
-        UIPickerView * pick = [[UIPickerView alloc] init];
-        pick.backgroundColor = _styleModel.pickBackgroudColor;
+        UIPickerView *pick = [[UIPickerView alloc] init];
         pick.delegate = self;
         pick.dataSource = self;
         _picker = pick;
     }
-    
     return _picker;
 }
 
-
 @end
 
-
-
-@interface WDKeyValueAlertViewCell()
-
-
-
-@end
-
+#pragma mark - WDKeyValueAlertViewCell
 
 @implementation WDKeyValueAlertViewCell
 
-
-
-// MARK: -  life cycle
-
-- (instancetype)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        [self loadConfig];
-        [self addSubviews];
-        [self loadData];
+- (instancetype)initWithFrame:(CGRect)frame {
+    if (self = [super initWithFrame:frame]) {
+        [self addSubview:self.leftLabel];
+        [self addSubview:self.rightLabel];
     }
     return self;
 }
 
--(void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
-    if (_leftLabel && _rightLabel) {
-        CGFloat width = self.frame.size.width/2;
-        _leftLabel.frame = CGRectMake(0, 0, width, self.frame.size.height);
-        _rightLabel.frame = CGRectMake(width, 0, width, self.frame.size.height);
+    CGFloat w = CGRectGetWidth(self.bounds);
+    CGFloat h = CGRectGetHeight(self.bounds);
+
+    self.leftLabel.hidden = !self.showLeft;
+    self.rightLabel.hidden = !self.showRight;
+
+    if (self.showLeft && self.showRight) {
+        CGFloat half = w / 2.0;
+        self.leftLabel.frame = CGRectMake(0, 0, half, h);
+        self.rightLabel.frame = CGRectMake(half, 0, half, h);
+    } else if (self.showLeft) {
+        self.leftLabel.frame = CGRectMake(0, 0, w, h);
+    } else if (self.showRight) {
+        self.rightLabel.frame = CGRectMake(0, 0, w, h);
     }
-    else if (_leftLabel || _rightLabel) {
-        _leftLabel.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-        _rightLabel.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-    }
-    else {
-        _leftLabel.frame = CGRectZero;
-        _rightLabel.frame = CGRectZero;
-    }
 }
 
-// MARK: -  private methods
-
-// 加载初始配置
--(void)loadConfig {
-    
-}
-
-// 添加view
--(void)addSubviews {
-    
-}
-
-// 加载数据
--(void)loadData {
-    
-    
-}
-
-// MARK: -  public methods
--(void)setIsSelect:(BOOL)isSelect
-{
+- (void)setIsSelect:(BOOL)isSelect {
     _isSelect = isSelect;
-    UIColor * color = _isSelect ? _selectTextColor: _textColor;
-    _leftLabel.textColor = color;
-    _rightLabel.textColor = color;
+    UIColor *color = isSelect ? (self.selectTextColor ?: UIColor.systemRedColor) : (self.textColor ?: UIColor.labelColor);
+    UIFont *font = isSelect ? [UIFont systemFontOfSize:17 weight:UIFontWeightSemibold] : [UIFont systemFontOfSize:16 weight:UIFontWeightRegular];
+    self.leftLabel.textColor = color;
+    self.rightLabel.textColor = color;
+    self.leftLabel.font = font;
+    self.rightLabel.font = font;
 }
 
-
-// MARK: -  getters and setters
--(UILabel *)leftLabel
-{
+- (UILabel *)leftLabel {
     if (!_leftLabel) {
-        UILabel * label = [[UILabel alloc] init];
+        UILabel *label = [[UILabel alloc] init];
         label.font = [UIFont systemFontOfSize:16];
         label.textAlignment = NSTextAlignmentCenter;
-        label.textColor = _textColor;
         _leftLabel = label;
-        [self addSubview:_leftLabel];
     }
     return _leftLabel;
 }
 
-
--(UILabel *)rightLabel
-{
+- (UILabel *)rightLabel {
     if (!_rightLabel) {
-        UILabel * label = [[UILabel alloc] init];
+        UILabel *label = [[UILabel alloc] init];
         label.font = [UIFont systemFontOfSize:16];
         label.textAlignment = NSTextAlignmentCenter;
-        label.textColor = _textColor;
         _rightLabel = label;
-        [self addSubview:_rightLabel];
     }
     return _rightLabel;
 }
-
 
 @end

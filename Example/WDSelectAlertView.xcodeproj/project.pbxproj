@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		39B7C5792629D300008B0EA4 /* UIViewController+SelectPopView.m in Sources */ = {isa = PBXBuildFile; fileRef = 39B7C5782629D300008B0EA4 /* UIViewController+SelectPopView.m */; };
+		39B7C5822629D300008B0EA4 /* WDSceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 39B7C5812629D300008B0EA4 /* WDSceneDelegate.m */; };
 		6003F58E195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58F195388D20070C39A /* CoreGraphics.framework */; };
 		6003F592195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
@@ -41,6 +42,8 @@
 		30FE30736453BDA5DBFB6DA3 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		39B7C5772629D300008B0EA4 /* UIViewController+SelectPopView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+SelectPopView.h"; sourceTree = "<group>"; };
 		39B7C5782629D300008B0EA4 /* UIViewController+SelectPopView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+SelectPopView.m"; sourceTree = "<group>"; };
+		39B7C5802629D300008B0EA4 /* WDSceneDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WDSceneDelegate.h; sourceTree = "<group>"; };
+		39B7C5812629D300008B0EA4 /* WDSceneDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WDSceneDelegate.m; sourceTree = "<group>"; };
 		41DB5BC4E8DFC952B4634162 /* Pods-WDSelectAlertView_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WDSelectAlertView_Example.release.xcconfig"; path = "Target Support Files/Pods-WDSelectAlertView_Example/Pods-WDSelectAlertView_Example.release.xcconfig"; sourceTree = "<group>"; };
 		6003F58A195388D20070C39A /* WDSelectAlertView_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WDSelectAlertView_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -135,6 +138,8 @@
 			children = (
 				6003F59C195388D20070C39A /* WDAppDelegate.h */,
 				6003F59D195388D20070C39A /* WDAppDelegate.m */,
+				39B7C5802629D300008B0EA4 /* WDSceneDelegate.h */,
+				39B7C5812629D300008B0EA4 /* WDSceneDelegate.m */,
 				6003F5A5195388D20070C39A /* WDViewController.h */,
 				6003F5A6195388D20070C39A /* WDViewController.m */,
 				39B7C5772629D300008B0EA4 /* UIViewController+SelectPopView.h */,
@@ -366,6 +371,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6003F59E195388D20070C39A /* WDAppDelegate.m in Sources */,
+				39B7C5822629D300008B0EA4 /* WDSceneDelegate.m in Sources */,
 				6003F5A7195388D20070C39A /* WDViewController.m in Sources */,
 				39B7C5792629D300008B0EA4 /* UIViewController+SelectPopView.m in Sources */,
 				6003F59A195388D20070C39A /* main.m in Sources */,
@@ -451,7 +457,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -484,7 +490,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -504,7 +510,7 @@
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "top.jocelen.top.WDSelectAlertView-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -522,7 +528,7 @@
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "top.jocelen.top.WDSelectAlertView-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -547,7 +553,7 @@
 				INFOPLIST_FILE = "Tests/Tests-Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WDSelectAlertView_Example.app/WDSelectAlertView_Example";
 				WRAPPER_EXTENSION = xctest;
 			};
@@ -569,7 +575,7 @@
 				INFOPLIST_FILE = "Tests/Tests-Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WDSelectAlertView_Example.app/WDSelectAlertView_Example";
 				WRAPPER_EXTENSION = xctest;
 			};

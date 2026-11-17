@@ -7,426 +7,521 @@
 //
 
 #import "WDDateAlertView.h"
+#import "WDSelectAlertHelper.h"
 
 @interface WDDateAlertView ()
 
-/**  取消*/
-@property (nonatomic, strong) UIButton * cancelButton;
-
-/**  确定*/
-@property (nonatomic, strong) UIButton * sureButton;
+@property (nonatomic, strong) UIVisualEffectView *backgroundEffectView;
+@property (nonatomic, strong) UIButton *cancelButton;
+@property (nonatomic, strong) UIButton *sureButton;
+@property (nonatomic, strong) UIView *toolbarLine;
 
 @end
 
-
 @implementation WDDateAlertView
 
-
-// MARK: -  life cycle
 @synthesize styleModel = _styleModel;
--(instancetype)initWithModel:(WDDateAlertStyleModel *)model;
-{
+
+- (instancetype)initWithModel:(WDDateAlertStyleModel *)model {
     if (self = [super initWithFrame:CGRectZero]) {
-        self.styleModel = model;
+        _styleModel = model ?: [WDDateAlertStyleModel defaultStyle];
         [self loadConfig];
         [self addSubviews];
-        [self loadData];
+        [self applyStyleModelData];
     }
     return self;
 }
 
--(void)awakeFromNib
-{
+- (void)awakeFromNib {
     [super awakeFromNib];
+    if (!_styleModel) {
+        _styleModel = [WDDateAlertStyleModel defaultStyle];
+    }
     [self loadConfig];
     [self addSubviews];
-    [self loadData];
+    [self applyStyleModelData];
 }
 
+- (void)safeAreaInsetsDidChange {
+    [super safeAreaInsetsDidChange];
+    [self setNeedsLayout];
+}
 
--(void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
-    CGFloat buttonHeight = 50;
-    CGSize buttonSize = CGSizeMake(90, buttonHeight);
-    
-    _cancelButton.frame = CGRectMake(14, 0, buttonSize.width, buttonSize.height);
-    _sureButton.frame = CGRectMake(self.frame.size.width - buttonSize.width - 14, 0, buttonSize.width, buttonSize.height);
-    
-    _datePick.hidden = _styleModel.style != WDDateAlertAlertStyleYYYYMMDD;
-    _datePick.frame = CGRectMake(0, buttonHeight, self.frame.size.width, self.frame.size.height - buttonHeight);
-    _datePickView.hidden = _styleModel.style == WDDateAlertAlertStyleYYYYMMDD;
-    _datePickView.frame = CGRectMake(0, buttonHeight, self.frame.size.width, self.frame.size.height - buttonHeight);
+
+    self.backgroundEffectView.frame = self.bounds;
+
+    CGFloat width = CGRectGetWidth(self.bounds);
+    CGFloat height = CGRectGetHeight(self.bounds);
+    CGFloat buttonHeight = 50.0;
+    CGSize buttonSize = CGSizeMake(90.0, buttonHeight);
+    CGFloat lineHeight = 1.0 / MAX([WDSelectAlertHelper activeWindowScene].screen.scale, 2.0);
+    CGFloat safeBottom = [WDSelectAlertHelper safeAreaInsetsForView:self].bottom;
+
+    self.cancelButton.frame = CGRectMake(16.0, 0, buttonSize.width, buttonSize.height);
+    self.sureButton.frame = CGRectMake(MAX(16.0, width - buttonSize.width - 16.0), 0, buttonSize.width, buttonSize.height);
+    self.toolbarLine.frame = CGRectMake(0, buttonHeight - lineHeight, width, lineHeight);
+
+    CGFloat pickerHeight = MAX(0, height - buttonHeight - safeBottom);
+    CGRect pickerFrame = CGRectMake(0, buttonHeight, width, pickerHeight);
+
+    BOOL isFullDate = (self.styleModel.style == WDDateAlertStyleYYYYMMDD);
+    self.datePick.hidden = !isFullDate;
+    self.datePick.frame = pickerFrame;
+    self.datePickView.hidden = isFullDate;
+    self.datePickView.frame = pickerFrame;
 }
 
-// MARK: -  private methods
+#pragma mark - Private Methods
 
-// 加载初始配置
--(void)loadConfig {
-    self.backgroundColor = _styleModel.backgroudColor;
-    
+- (void)loadConfig {
+    self.backgroundColor = UIColor.clearColor;
 }
 
-// 添加view
--(void)addSubviews {
-    [self addSubview:self.cancelButton];
-    [self addSubview:self.sureButton];
-    [self addSubview:self.datePick];
-    [self addSubview:self.datePickView];
+- (void)addSubviews {
+    [self addSubview:self.backgroundEffectView];
+    UIView *container = self.backgroundEffectView.contentView;
+    [container addSubview:self.cancelButton];
+    [container addSubview:self.sureButton];
+    [container addSubview:self.toolbarLine];
+    [container addSubview:self.datePick];
+    [container addSubview:self.datePickView];
 }
 
-// 加载数据
--(void)loadData {
-    
-    
+- (UIColor *)resolvedPickerFillColor {
+    if (self.styleModel.materialStyle == WDAlertMaterialStyleSolid) {
+        return self.styleModel.dateBackgroundColor ?: UIColor.secondarySystemGroupedBackgroundColor;
+    }
+    return UIColor.clearColor;
 }
 
--(void)clickAction:(UIButton *)sender
-{
-    if (_didClickButton) {
-        BOOL isSure = [sender isEqual:_sureButton];
-        NSDate * date = _styleModel.style == WDDateAlertAlertStyleYYYYMMDD ? _datePick.date : _datePickView.date;
-        _didClickButton(isSure,date);
+- (void)applyStyleModelData {
+    CACornerMask topCorners = kCALayerMinXMinYCorner | kCALayerMaxXMinYCorner;
+    [WDSelectAlertHelper applyMaterialStyle:self.styleModel.materialStyle
+                            backgroundColor:self.styleModel.backgroundColor
+                       hasCustomBackground:self.styleModel.hasCustomBackgroundColor
+                               cornerRadius:self.styleModel.cornerRadius
+                              maskedCorners:topCorners
+                               toEffectView:self.backgroundEffectView];
+    UIColor *pickerFill = [self resolvedPickerFillColor];
+    self.datePick.backgroundColor = pickerFill;
+    self.datePickView.backgroundColor = pickerFill;
+    self.toolbarLine.backgroundColor = self.styleModel.lineSpaceColor;
+
+    NSDate *targetDate = self.styleModel.date ?: [NSDate date];
+    if (self.styleModel.style == WDDateAlertStyleYYYYMMDD) {
+        self.datePick.minimumDate = self.styleModel.minimumDate;
+        self.datePick.maximumDate = self.styleModel.maximumDate;
+        self.datePick.date = targetDate;
+    } else {
+        self.datePickView.style = self.styleModel.style;
+        self.datePickView.minimumDate = self.styleModel.minimumDate;
+        self.datePickView.maximumDate = self.styleModel.maximumDate;
+        self.datePickView.date = targetDate;
+    }
+    [self setNeedsLayout];
+}
+
+- (void)clickAction:(UIButton *)sender {
+    if (self.didClickButton) {
+        BOOL isSure = (sender == self.sureButton);
+        NSDate *selected = (self.styleModel.style == WDDateAlertStyleYYYYMMDD) ? self.datePick.date : self.datePickView.date;
+        self.didClickButton(isSure, selected ?: [NSDate date]);
     }
 }
 
--(void)dateChanged:(UIDatePicker *)sender
-{
-    if (_didSelectDate) {
-        NSDate * date = sender.date;
-        _didSelectDate(date);
+- (void)dateChanged:(UIDatePicker *)sender {
+    if (self.didSelectDate) {
+        self.didSelectDate(sender.date);
     }
 }
 
--(void)dateViewChanged:(WDDatePickView *)sender;
-{
-    if (_didSelectDate) {
-        NSDate * date = sender.date;
-        _didSelectDate(date);
+- (void)dateViewChanged:(WDDatePickView *)sender {
+    if (self.didSelectDate && sender.date) {
+        self.didSelectDate(sender.date);
     }
 }
 
-// MARK: -  public methods
--(void)setDefaultDate:(NSDate *)date;
-{
-    self.datePick.date = date;
-}
+#pragma mark - Public Methods
 
--(void)setStyleModel:(WDDateAlertStyleModel * _Nonnull)styleModel
-{
-    _styleModel = styleModel;
-    NSDate * date = _styleModel.date ? _styleModel.date : [NSDate date];
-    if (styleModel.style == WDDateAlertAlertStyleYYYYMMDD) {
+- (void)setDefaultDate:(NSDate *)date {
+    if (!date) {
+        return;
+    }
+    if (self.styleModel.style == WDDateAlertStyleYYYYMMDD) {
         self.datePick.date = date;
-        if (_styleModel.minimumDate) {
-            self.datePick.minimumDate = _styleModel.minimumDate;
-        }
-        
-        if (_styleModel.maximumDate) {
-            self.datePick.maximumDate = _styleModel.maximumDate;
-        }
-    }
-    else {
+    } else {
         self.datePickView.date = date;
     }
-    [self layoutIfNeeded];
 }
 
-// MARK: -  getters and setters
--(UIButton *)cancelButton
-{
+- (void)setStyleModel:(WDDateAlertStyleModel *)styleModel {
+    _styleModel = styleModel ?: [WDDateAlertStyleModel defaultStyle];
+    [self applyStyleModelData];
+}
+
+#pragma mark - Getters
+
+- (UIVisualEffectView *)backgroundEffectView {
+    if (!_backgroundEffectView) {
+        _backgroundEffectView = [[UIVisualEffectView alloc] initWithEffect:nil];
+    }
+    return _backgroundEffectView;
+}
+
+- (UIButton *)cancelButton {
     if (!_cancelButton) {
-        UIButton * button = [UIButton buttonWithType:UIButtonTypeSystem];
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
         button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-        button.titleLabel.font = [UIFont systemFontOfSize:18];
-        [button setTitle:_styleModel.cancelTitle forState:UIControlStateNormal];
-        [button setTitleColor:_styleModel.cancelTitleColor forState:UIControlStateNormal];
+        button.titleLabel.font = [UIFont systemFontOfSize:17 weight:UIFontWeightRegular];
+        [button setTitle:self.styleModel.cancelTitle forState:UIControlStateNormal];
+        [button setTitleColor:self.styleModel.cancelTitleColor forState:UIControlStateNormal];
         [button addTarget:self action:@selector(clickAction:) forControlEvents:UIControlEventTouchUpInside];
         _cancelButton = button;
     }
     return _cancelButton;
 }
 
--(UIButton *)sureButton
-{
+- (UIButton *)sureButton {
     if (!_sureButton) {
-        UIButton * button = [UIButton buttonWithType:UIButtonTypeSystem];
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
         button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
-        button.titleLabel.font = [UIFont boldSystemFontOfSize:18];
-        [button setTitle:_styleModel.sureTitle forState:UIControlStateNormal];
-        [button setTitleColor:_styleModel.sureTitleColor forState:UIControlStateNormal];
+        button.titleLabel.font = [UIFont systemFontOfSize:17 weight:UIFontWeightSemibold];
+        [button setTitle:self.styleModel.sureTitle forState:UIControlStateNormal];
+        [button setTitleColor:self.styleModel.sureTitleColor forState:UIControlStateNormal];
         [button addTarget:self action:@selector(clickAction:) forControlEvents:UIControlEventTouchUpInside];
         _sureButton = button;
     }
     return _sureButton;
 }
 
+- (UIView *)toolbarLine {
+    if (!_toolbarLine) {
+        _toolbarLine = [[UIView alloc] init];
+        _toolbarLine.backgroundColor = self.styleModel.lineSpaceColor;
+    }
+    return _toolbarLine;
+}
 
--(WDDatePicker *)datePick
-{
+- (WDDatePicker *)datePick {
     if (!_datePick) {
-        WDDatePicker * view = [[WDDatePicker alloc] init];
-        view.showTextColor = _styleModel.dateTextColor;
-        view.backgroundColor = _styleModel.dateBackgroudColor;
+        WDDatePicker *view = [[WDDatePicker alloc] init];
+        view.showTextColor = self.styleModel.dateTextColor;
         view.datePickerMode = UIDatePickerModeDate;
-        NSLocale * locale = [[NSLocale alloc] initWithLocaleIdentifier:_styleModel.locale];
-        [view setLocale:locale];
+        NSLocale *locale = (self.styleModel.locale.length > 0)
+                               ? [[NSLocale alloc] initWithLocaleIdentifier:self.styleModel.locale]
+                               : NSLocale.currentLocale;
+        view.locale = locale;
         [view addTarget:self action:@selector(dateChanged:) forControlEvents:UIControlEventValueChanged];
         _datePick = view;
     }
-    
     return _datePick;
 }
 
--(WDDatePickView *)datePickView
-{
+- (WDDatePickView *)datePickView {
     if (!_datePickView) {
         __weak typeof(self) weakSelf = self;
-
-        WDDatePickView * pick = [[WDDatePickView alloc] init];
-        pick.style = _styleModel.style;
-        pick.backgroundColor = _styleModel.dateBackgroudColor;
-        pick.textColor = _styleModel.dateTextColor;
-        pick.lineSpaceColor = _styleModel.lineSpaceColor;
-        pick.valueChangeed = ^(WDDatePickView * _Nonnull view, NSDate * _Nonnull value) {
+        WDDatePickView *pick = [[WDDatePickView alloc] init];
+        pick.style = self.styleModel.style;
+        pick.textColor = self.styleModel.dateTextColor;
+        pick.lineSpaceColor = self.styleModel.lineSpaceColor;
+        pick.valueChanged = ^(WDDatePickView * _Nonnull view, NSDate * _Nonnull value) {
             [weakSelf dateViewChanged:view];
         };
         _datePickView = pick;
     }
-    
     return _datePickView;
 }
 
 @end
 
+#pragma mark - WDDatePicker
+
 @implementation WDDatePicker
 
--(instancetype)init {
-    if (self = [super init]) {
-        if (@available(iOS 13.4, *)) {
-            self.preferredDatePickerStyle = UIDatePickerStyleWheels;
-        }
+- (instancetype)initWithFrame:(CGRect)frame {
+    if (self = [super initWithFrame:frame]) {
+        self.preferredDatePickerStyle = UIDatePickerStyleWheels;
     }
     return self;
 }
 
--(void)layoutSubviews
-{
-    [super layoutSubviews];
-    if ([self respondsToSelector:sel_registerName("setHighlightsToday:")]) {
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored"-Wundeclared-selector"
-            [self performSelector:@selector(setHighlightsToday:) withObject:[NSNumber numberWithBool:NO]];
-    #pragma clang diagnostic pop
+- (nullable instancetype)initWithCoder:(NSCoder *)coder {
+    if (self = [super initWithCoder:coder]) {
+        self.preferredDatePickerStyle = UIDatePickerStyleWheels;
     }
-    [self setValue:_showTextColor forKey:@"textColor"];
+    return self;
 }
 
 @end
 
+#pragma mark - WDDatePickView
 
+static NSInteger const kYearMonthCycleMultiplier = 100;
 
-static NSInteger DateSelectMultiple = 100;
+@interface WDDatePickView () <UIPickerViewDelegate, UIPickerViewDataSource>
 
-@interface WDDatePickView ()<UIPickerViewDelegate,UIPickerViewDataSource>
-@property (nonatomic, strong)NSArray<NSString *> *showYearData;
-@property (nonatomic, strong)NSArray<NSString *> *showMonthData;
-/**  选中index*/
-@property (nonatomic, strong)NSMutableArray<NSNumber *> * indexArr;
+@property (nonatomic, strong, nullable) NSArray<NSString *> *showYearData;
+@property (nonatomic, strong) NSArray<NSString *> *showMonthData;
+@property (nonatomic, strong) NSMutableArray<NSNumber *> *indexArr;
+@property (nonatomic, strong) NSCalendar *gregorianCalendar;
 
 @end
-
 
 @implementation WDDatePickView
 
+@synthesize date = _date;
 
-// MARK: -  life cycle
-
--(instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         [self loadConfig];
-        [self addSubviews];
-        [self loadData];
     }
     return self;
 }
 
--(void)awakeFromNib
-{
+- (void)awakeFromNib {
     [super awakeFromNib];
     [self loadConfig];
-    [self addSubviews];
-    [self loadData];
 }
 
-
--(void)layoutSubviews
-{
-    [super layoutSubviews];
-    
-}
-
-// MARK: -  private methods
-
-// 加载初始配置
--(void)loadConfig {
+- (void)loadConfig {
     self.delegate = self;
     self.dataSource = self;
-    
-    [self scrollToIndex:_indexArr animated:NO];
+    _textColor = UIColor.labelColor;
+    [self rebuildIndexArrayForCurrentStyle];
 }
 
-// 添加view
--(void)addSubviews {
-    
-    
-}
-
-// 加载数据
--(void)loadData {
-    
-    
-}
-
--(void)scrollToIndex:(NSArray<NSNumber *> *)indexArr animated:(BOOL)animated
-{
-    for (int i = 0; i < indexArr.count; i++) {
-        NSInteger row = indexArr[i].integerValue;
-        [self selectRow:row inComponent:i animated:animated];
+- (NSCalendar *)gregorianCalendar {
+    if (!_gregorianCalendar) {
+        _gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     }
+    return _gregorianCalendar;
 }
 
-// MARK: -  public methods
-
-/// 刷新
--(void)updateDateValue;
-{
-    NSMutableString * string = [NSMutableString string];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.dateFormat = _style ==  WDDateAlertAlertStyleYYYYMM ? @"yyyy-MM" : @"yyyy";
-    for (int i = 0; i < _indexArr.count; i++) {
-        NSInteger index = _indexArr[i].integerValue;
-        if (i == 0) {
-            [string appendString:self.showYearData[index%self.showYearData.count]];
-        }
-        else {
-            [string appendFormat:@"-%@",self.showMonthData[index%self.showMonthData.count]];
-        }
-    }
-    _date = [dateFormatter dateFromString:string];
-}
-
-// MARK: -  getters and setters
--(void)setStyle:(WDDateAlertAlertStyle)style
-{
-    _style = style;
-    
+- (void)rebuildIndexArrayForCurrentStyle {
     _indexArr = [NSMutableArray array];
-    [_indexArr addObject:@(self.showMonthData.count/2)];
-    
-    if (_style ==  WDDateAlertAlertStyleYYYYMM) {
-        [_indexArr addObject:@(DateSelectMultiple*self.showYearData.count/2)];
+    NSUInteger yearCount = MAX(1, self.showYearData.count);
+    [_indexArr addObject:@(yearCount / 2)];
+    if (self.style == WDDateAlertStyleYYYYMM) {
+        [_indexArr addObject:@(kYearMonthCycleMultiplier * self.showMonthData.count / 2)];
     }
 }
 
--(void)setDate:(NSDate *)date
-{
-    _date = date;
-    NSCalendarUnit unit = _style == WDDateAlertAlertStyleYYYY ? NSCalendarUnitYear : NSCalendarUnitYear|NSCalendarUnitMonth;
-    NSDateComponents *components = [[NSCalendar currentCalendar] components:unit fromDate:date];
-    
-    for (int i = 0; i < self.showYearData.count ; i++) {
-        if ([[NSString stringWithFormat:@"%ld", components.year] isEqualToString:self.showYearData[i]]) {
-            [_indexArr replaceObjectAtIndex:0 withObject:@(i)];
+- (void)scrollToIndex:(NSArray<NSNumber *> *)indexArr animated:(BOOL)animated {
+    [self reloadAllComponents];
+    for (NSUInteger i = 0; i < indexArr.count; i++) {
+        NSInteger compCount = [self numberOfComponents];
+        if ((NSInteger)i >= compCount) {
+            break;
+        }
+        NSInteger maxRows = [self numberOfRowsInComponent:(NSInteger)i];
+        if (maxRows <= 0) {
+            continue;
+        }
+        NSInteger row = MIN(MAX(0, indexArr[i].integerValue), maxRows - 1);
+        [self selectRow:row inComponent:(NSInteger)i animated:animated];
+    }
+}
+
+- (void)updateDateValue {
+    if (self.showYearData.count == 0 || self.indexArr.count == 0) {
+        return;
+    }
+
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.calendar = self.gregorianCalendar;
+    dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+    dateFormatter.dateFormat = (self.style == WDDateAlertStyleYYYYMM) ? @"yyyy-MM" : @"yyyy";
+
+    NSMutableString *string = [NSMutableString string];
+    for (NSUInteger i = 0; i < self.indexArr.count; i++) {
+        NSInteger index = MAX(0, self.indexArr[i].integerValue);
+        if (i == 0) {
+            [string appendString:self.showYearData[index % self.showYearData.count]];
+        } else {
+            [string appendFormat:@"-%@", self.showMonthData[index % self.showMonthData.count]];
+        }
+    }
+
+    NSDate *parsed = [dateFormatter dateFromString:string];
+    if (parsed) {
+        if (self.minimumDate && [parsed compare:self.minimumDate] == NSOrderedAscending) {
+            parsed = self.minimumDate;
+        }
+        if (self.maximumDate && [parsed compare:self.maximumDate] == NSOrderedDescending) {
+            parsed = self.maximumDate;
+        }
+        _date = parsed;
+    }
+}
+
+#pragma mark - Setters & Getters
+
+- (void)setStyle:(WDDateAlertStyle)style {
+    _style = style;
+    [self rebuildIndexArrayForCurrentStyle];
+    if (_date) {
+        [self syncSelectionToDate:_date animated:NO];
+    }
+}
+
+- (void)setMinimumDate:(NSDate *)minimumDate {
+    _minimumDate = minimumDate;
+    _showYearData = nil;
+    [self rebuildIndexArrayForCurrentStyle];
+    if (_date) {
+        [self syncSelectionToDate:_date animated:NO];
+    }
+}
+
+- (void)setMaximumDate:(NSDate *)maximumDate {
+    _maximumDate = maximumDate;
+    _showYearData = nil;
+    [self rebuildIndexArrayForCurrentStyle];
+    if (_date) {
+        [self syncSelectionToDate:_date animated:NO];
+    }
+}
+
+- (void)setDate:(NSDate *)date {
+    NSDate *resolved = date ?: [NSDate date];
+    if (self.minimumDate && [resolved compare:self.minimumDate] == NSOrderedAscending) {
+        resolved = self.minimumDate;
+    }
+    if (self.maximumDate && [resolved compare:self.maximumDate] == NSOrderedDescending) {
+        resolved = self.maximumDate;
+    }
+    _date = resolved;
+    [self syncSelectionToDate:resolved animated:NO];
+}
+
+- (NSDate *)date {
+    if (!_date) {
+        [self updateDateValue];
+    }
+    return _date ?: [NSDate date];
+}
+
+- (void)syncSelectionToDate:(NSDate *)date animated:(BOOL)animated {
+    if (self.indexArr.count == 0) {
+        [self rebuildIndexArrayForCurrentStyle];
+    }
+
+    NSCalendarUnit unit = (self.style == WDDateAlertStyleYYYY)
+                              ? NSCalendarUnitYear
+                              : (NSCalendarUnitYear | NSCalendarUnitMonth);
+    NSDateComponents *components = [self.gregorianCalendar components:unit fromDate:date];
+
+    NSString *yearTarget = [NSString stringWithFormat:@"%ld", (long)components.year];
+    for (NSUInteger i = 0; i < self.showYearData.count; i++) {
+        if ([yearTarget isEqualToString:self.showYearData[i]]) {
+            [self.indexArr replaceObjectAtIndex:0 withObject:@(i)];
             break;
         }
     }
-    
-    for (int i = 0; i < self.showMonthData.count ; i++) {
-        if ([[NSString stringWithFormat:@"%ld", components.month] isEqualToString:self.showMonthData[i]]) {
-            NSInteger index = DateSelectMultiple*self.showMonthData.count/2 + i;
-            if (_indexArr.count > 1) {
-                [_indexArr replaceObjectAtIndex:1 withObject:@(index)];
+
+    if (self.style == WDDateAlertStyleYYYYMM && self.indexArr.count > 1) {
+        NSString *monthTarget = [NSString stringWithFormat:@"%02ld", (long)components.month];
+        NSString *shortMonthTarget = [NSString stringWithFormat:@"%ld", (long)components.month];
+        for (NSUInteger i = 0; i < self.showMonthData.count; i++) {
+            NSString *item = self.showMonthData[i];
+            if ([monthTarget isEqualToString:item] || [shortMonthTarget isEqualToString:item]) {
+                NSInteger index = (kYearMonthCycleMultiplier * self.showMonthData.count / 2) + (NSInteger)i;
+                [self.indexArr replaceObjectAtIndex:1 withObject:@(index)];
+                break;
             }
-            break;
         }
     }
-    [self scrollToIndex:_indexArr animated:NO];
+
+    [self scrollToIndex:self.indexArr animated:animated];
 }
 
--(NSArray<NSString *> *)showYearData {
+- (NSArray<NSString *> *)showYearData {
     if (!_showYearData) {
-        NSMutableArray<NSString *> * arr = [NSMutableArray array];
-        NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitYear fromDate:[NSDate date]];
-        int begin = (int)components.year - 100;
-        int end = (int)components.year + 100;
-        for (int i = begin; i < end; i++) {
-            [arr addObject:[NSString stringWithFormat:@"%d",i]];
+        NSInteger currentYear = [self.gregorianCalendar component:NSCalendarUnitYear fromDate:[NSDate date]];
+        NSInteger beginYear = currentYear - 100;
+        NSInteger endYear = currentYear + 100;
+
+        if (self.minimumDate) {
+            beginYear = [self.gregorianCalendar component:NSCalendarUnitYear fromDate:self.minimumDate];
         }
-        _showYearData = arr;
+        if (self.maximumDate) {
+            endYear = [self.gregorianCalendar component:NSCalendarUnitYear fromDate:self.maximumDate];
+        }
+        if (endYear < beginYear) {
+            endYear = beginYear;
+        }
+
+        NSMutableArray<NSString *> *arr = [NSMutableArray arrayWithCapacity:(NSUInteger)(endYear - beginYear + 1)];
+        for (NSInteger year = beginYear; year <= endYear; year++) {
+            [arr addObject:[NSString stringWithFormat:@"%ld", (long)year]];
+        }
+        _showYearData = [arr copy];
     }
     return _showYearData;
 }
 
--(NSArray<NSString *> *)showMonthData {
+- (NSArray<NSString *> *)showMonthData {
     if (!_showMonthData) {
-        NSMutableArray<NSString *> * arr = [NSMutableArray array];
-        for (int i = 0; i < 12; i++) {
-            [arr addObject:[NSString stringWithFormat:@"%d",i+1]];
+        NSMutableArray<NSString *> *arr = [NSMutableArray arrayWithCapacity:12];
+        for (NSInteger m = 1; m <= 12; m++) {
+            [arr addObject:[NSString stringWithFormat:@"%02ld", (long)m]];
         }
-        _showMonthData = arr;
+        _showMonthData = [arr copy];
     }
     return _showMonthData;
 }
 
-
-// MARK: -  UIPickerViewDelegate
-- (NSInteger)numberOfComponentsInPickerView:(nonnull UIPickerView *)pickerView {
-    return _indexArr.count;
+- (void (^)(WDDatePickView *, NSDate *))valueChangeed {
+    return self.valueChanged;
 }
 
-- (NSInteger)pickerView:(nonnull UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
-    NSInteger row = component == 0 ? self.showYearData.count : DateSelectMultiple*self.showMonthData.count;
-    return row;
+- (void)setValueChangeed:(void (^)(WDDatePickView *, NSDate *))valueChangeed {
+    self.valueChanged = valueChangeed;
 }
 
-- (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component
-{
-    return 34;
+#pragma mark - UIPickerViewDataSource & Delegate
+
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
+    return (NSInteger)self.indexArr.count;
 }
 
-- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
-{
-    //设置分割线的颜色
-    for(UIView *singleLine in pickerView.subviews)
-    {
-        if (singleLine.frame.size.height < 1)
-        {
-            singleLine.backgroundColor = _lineSpaceColor;
-        }
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+    if (component == 0) {
+        return (NSInteger)self.showYearData.count;
     }
+    return kYearMonthCycleMultiplier * (NSInteger)self.showMonthData.count;
+}
 
-    //设置文字的属性
-    UILabel *label = [[UILabel alloc] init];
-    label.font = [UIFont systemFontOfSize:22];
+- (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component {
+    return 36.0;
+}
+
+- (UIView *)pickerView:(UIPickerView *)pickerView
+            viewForRow:(NSInteger)row
+          forComponent:(NSInteger)component
+           reusingView:(nullable UIView *)view {
+    UILabel *label = [view isKindOfClass:[UILabel class]] ? (UILabel *)view : [[UILabel alloc] init];
+    label.font = [UIFont systemFontOfSize:21 weight:UIFontWeightRegular];
     label.textAlignment = NSTextAlignmentCenter;
-    NSString * title  = component == 0 ? self.showYearData[row%self.showYearData.count] : self.showMonthData[row%self.showMonthData.count];
+    label.textColor = self.textColor ?: UIColor.labelColor;
 
-    label.text = title;
-    label.textColor = _textColor;
-
+    if (component == 0 && self.showYearData.count > 0) {
+        label.text = self.showYearData[(NSUInteger)row % self.showYearData.count];
+    } else if (self.showMonthData.count > 0) {
+        label.text = self.showMonthData[(NSUInteger)row % self.showMonthData.count];
+    }
     return label;
 }
 
-
--(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
-    [pickerView selectRow:row inComponent:component animated:NO];
-    
-    [_indexArr replaceObjectAtIndex:component withObject:@(row)];
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+    if (component >= 0 && (NSUInteger)component < self.indexArr.count) {
+        [self.indexArr replaceObjectAtIndex:(NSUInteger)component withObject:@(row)];
+    }
     [self updateDateValue];
-    if (_valueChangeed) {
-        _valueChangeed(self,self.date);
+    if (self.valueChanged) {
+        self.valueChanged(self, self.date);
     }
 }
 

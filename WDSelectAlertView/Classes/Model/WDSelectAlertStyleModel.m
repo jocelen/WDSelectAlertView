@@ -9,156 +9,165 @@
 #import "WDSelectAlertStyleModel.h"
 #import "WDSelectAlertHelper.h"
 
+@interface WDSelectAlertStyleModel ()
+@property (nonatomic, assign, readwrite) BOOL hasCustomBackgroundColor;
+@end
+
 @implementation WDSelectAlertStyleModel
 
-// MARK: -  life cycle
-+(WDSelectAlertStyleModel *)defaultStyle;
-{
-    WDSelectAlertStyleModel * model = [[WDSelectAlertStyleModel alloc] init];
-    
-    model.leftPadding = 14;
-    model.titleHeight = 50;
-    model.selectButtonHeight = 50;
-    model.maxAlertWidth = [UIScreen mainScreen].bounds.size.width * 0.8;
-    model.maxAlertHeight = [UIScreen mainScreen].bounds.size.height * 0.6;
-    model.layoutAlertHeight = 0;
-    model.lineSapceHeight = 0.7;
-    model.alertCornerRadius = 4;
-    
-    model.backgroudColor = [WDSelectAlertHelper toHexColor:@"#FFFFFF"];
-    model.lineSpaceColor = [WDSelectAlertHelper toHexColor:@"#EAECED"];
++ (WDSelectAlertStyleModel *)defaultStyle {
+    WDSelectAlertStyleModel *model = [[WDSelectAlertStyleModel alloc] init];
 
-    model.titleColor = [WDSelectAlertHelper toHexColor:@"#3E3E3E"];
-    model.titleFont = [UIFont fontWithName:@"PingFangSC-Medium" size:19];
-    
-    model.contentColor = [WDSelectAlertHelper toHexColor:@"#3E3E3E"];
-    model.subContentColor = [WDSelectAlertHelper toHexColor:@"#5B5B5B"];
+    CGRect windowBounds = [WDSelectAlertHelper currentWindowBounds];
+    CGFloat shortSide = MIN(windowBounds.size.width, windowBounds.size.height);
+
+    model.materialStyle = WDAlertMaterialStyleAutomatic;
+    model.leftPadding = 16.0;
+    model.titleHeight = 52.0;
+    model.selectButtonHeight = 50.0;
+    model.maxAlertWidth = MIN(shortSide * 0.8, 340.0);
+    model.maxAlertHeight = windowBounds.size.height * 0.65;
+    model.layoutAlertHeight = 0;
+    model.lineSpaceHeight = 1.0 / MAX([WDSelectAlertHelper activeWindowScene].screen.scale, 2.0);
+    model.alertCornerRadius = [WDSelectAlertHelper isIOS26OrLater] ? 26.0 : 14.0;
+
+    model->_backgroundColor = UIColor.secondarySystemGroupedBackgroundColor;
+    model.hasCustomBackgroundColor = NO;
+    model.lineSpaceColor = UIColor.separatorColor;
+
+    model.titleColor = UIColor.labelColor;
+    model.titleFont = [UIFont systemFontOfSize:18 weight:UIFontWeightSemibold];
+
+    model.contentColor = UIColor.labelColor;
+    model.subContentColor = UIColor.secondaryLabelColor;
     model.contentTextAlignment = NSTextAlignmentCenter;
-    model.contentFont = [UIFont fontWithName:@"PingFangSC-Regular" size: 18];
-    model.lineBreakMode = NSLineBreakByCharWrapping;
-    
+    model.contentFont = [UIFont systemFontOfSize:16 weight:UIFontWeightRegular];
+    model.lineBreakMode = NSLineBreakByWordWrapping;
+
+    UIColor *brandRedColor = [UIColor colorWithDynamicProvider:^UIColor * _Nonnull(UITraitCollection * _Nonnull traitCollection) {
+        if (traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+            return [WDSelectAlertHelper toHexColor:@"#FF4D61"];
+        }
+        return [WDSelectAlertHelper toHexColor:@"#DC3045"];
+    }];
+
     model.isOptional = YES;
-    model.sureTitle = @"确定";
-    model.sureTitleColor = [WDSelectAlertHelper toHexColor:@"#DC3045"];
-    model.sureTitleFont = [UIFont fontWithName:@"PingFangSC-Heavy" size:18];
+    model->_sureTitle = @"确定";
+    model.sureTitleColor = brandRedColor;
+    model.sureTitleFont = [UIFont systemFontOfSize:17 weight:UIFontWeightSemibold];
     model.sureTitleAdjusts = NO;
-    
-    model.cancelTitle = @"取消";
-    model.cancelTitleColor = [WDSelectAlertHelper toHexColor:@"#7B7B7B"];
-    model.cancelTitleFont = [UIFont fontWithName:@"PingFangSC-Regular" size:18];
+    model.sureTitleMinimumScaleFactor = 0.5;
+
+    model->_cancelTitle = @"取消";
+    model.cancelTitleColor = UIColor.secondaryLabelColor;
+    model.cancelTitleFont = [UIFont systemFontOfSize:17 weight:UIFontWeightRegular];
     model.cancelTitleAdjusts = NO;
-    
-    model.highlightColor = [WDSelectAlertHelper toHexColor:@"#3E3E3E"];
-    model.highlightFont = model.contentFont;
-    
-    model.linkColor = [WDSelectAlertHelper toHexColor:@"#3057DC"];
+    model.cancelTitleMinimumScaleFactor = 0.5;
+
+    model.highlightColor = UIColor.labelColor;
+    model.highlightFont = [UIFont systemFontOfSize:16 weight:UIFontWeightMedium];
+
+    model.linkColor = UIColor.systemBlueColor;
     model.linkFont = model.contentFont;
-    
+
     return model;
 }
 
+#pragma mark - Public Methods
 
-// MARK: -  public methods
-/// 计算富文本
--(NSMutableAttributedString *)layoutAttributesContent;
-{
+- (NSMutableAttributedString *)layoutAttributesContent {
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.lineBreakMode = self.lineBreakMode;
-    
-    NSDictionary *attributes = @{
-        NSForegroundColorAttributeName:self.title.length ? self.subContentColor : self.contentColor,
-                                 NSFontAttributeName:self.contentFont,
-                                 NSParagraphStyleAttributeName:paragraphStyle,
-                                 };
-    NSMutableAttributedString *attributeStr = [[NSMutableAttributedString alloc] initWithString:self.content ?: @"" attributes:attributes];
-    return attributeStr;
+    paragraphStyle.alignment = self.contentTextAlignment;
+    paragraphStyle.lineSpacing = 3.0;
+
+    UIColor *textColor = (self.hasTitle ? self.subContentColor : self.contentColor) ?: UIColor.labelColor;
+    UIFont *font = self.contentFont ?: [UIFont systemFontOfSize:16];
+
+    NSDictionary<NSAttributedStringKey, id> *attributes = @{
+        NSForegroundColorAttributeName: textColor,
+        NSFontAttributeName: font,
+        NSParagraphStyleAttributeName: paragraphStyle,
+    };
+    return [[NSMutableAttributedString alloc] initWithString:self.content ?: @"" attributes:attributes];
 }
 
-
-
--(CGRect)layoutTitleFrame;
-{
-    CGRect frame = CGRectZero;
-    if (self.title.length) {
-        CGFloat titleLeftPadding = self.leftPadding * 2;
-        CGSize maxSize = CGSizeMake(self.maxAlertWidth - titleLeftPadding * 2, CGFLOAT_MAX);
-        CGFloat layoutTitleHight = [WDSelectAlertHelper getFontSize:self.title Font:self.titleFont Paragraph:nil Size:maxSize].height;
-        
-        BOOL hasMax = layoutTitleHight + self.leftPadding*2 > self.titleHeight;
-        layoutTitleHight = MAX(layoutTitleHight + self.leftPadding*2, self.titleHeight);
-        frame = CGRectMake(titleLeftPadding, hasMax ? 0 : (self.titleHeight - layoutTitleHight)/2, self.maxAlertWidth - titleLeftPadding*2, layoutTitleHight);
+- (CGRect)layoutTitleFrame {
+    if (!self.hasTitle) {
+        return CGRectZero;
     }
-    return frame;
+    CGFloat horizontalInset = self.leftPadding * 1.5;
+    CGFloat availableWidth = MAX(0, self.maxAlertWidth - horizontalInset * 2);
+    CGSize maxSize = CGSizeMake(availableWidth, CGFLOAT_MAX);
+    CGFloat textHeight = [WDSelectAlertHelper getFontSize:self.title
+                                                     Font:self.titleFont
+                                                Paragraph:nil
+                                                     Size:maxSize].height;
+    CGFloat layoutTitleHeight = MAX(ceil(textHeight) + self.leftPadding * 1.5, self.titleHeight);
+    return CGRectMake(horizontalInset, 0, availableWidth, layoutTitleHeight);
 }
 
-/// 计算确认按钮
--(CGRect)layoutSureButtonFrame;
-{
-    CGFloat lineSapce = self.lineSapceHeight;
-    CGSize size = CGSizeMake(self.maxAlertWidth/(self.isOptional ? 2 : 1), self.selectButtonHeight);
-    CGRect frame = CGRectMake(self.isOptional ? (size.width + lineSapce ): 0 , lineSapce, size.width, size.height);
-    return frame;
-}
-
-
-
-/// 计算取消按钮
--(CGRect)layoutCancelButtonFrame;
-{
-    CGSize size =  CGSizeMake( self.isOptional ? self.maxAlertWidth/2 - self.lineSapceHeight : 0, self.selectButtonHeight);
-    CGRect frame = CGRectMake(0, self.lineSapceHeight, size.width, size.height);
-    return frame;
-}
-
-// MARK: -  getters and setters
-
--(BOOL)hasTitle
-{
-    return _title.length;
-}
-
-
--(void)setTitle:(NSString *)title
-{
-    if (title != nil && title.length) {
-        _title = title;
+- (CGRect)layoutSureButtonFrame {
+    CGFloat lineSpace = self.lineSpaceHeight;
+    if (self.isOptional) {
+        CGFloat halfWidth = (self.maxAlertWidth - lineSpace) / 2.0;
+        return CGRectMake(halfWidth + lineSpace, lineSpace, halfWidth, self.selectButtonHeight);
     }
+    return CGRectMake(0, lineSpace, self.maxAlertWidth, self.selectButtonHeight);
 }
 
--(void)setContent:(NSString *)content
-{
-    if (content != nil && content.length ) {
-        _content = content;
+- (CGRect)layoutCancelButtonFrame {
+    if (!self.isOptional) {
+        return CGRectZero;
     }
+    CGFloat halfWidth = (self.maxAlertWidth - self.lineSpaceHeight) / 2.0;
+    return CGRectMake(0, self.lineSpaceHeight, halfWidth, self.selectButtonHeight);
 }
 
--(void)setSureTitle:(NSString *)sureTitle
-{
-    if (sureTitle != nil && sureTitle.length) {
-        _sureTitle = sureTitle;
-    }
+#pragma mark - Getters & Setters
+
+- (BOOL)hasTitle {
+    return self.title.length > 0;
 }
 
--(void)setCancelTitle:(NSString *)cancelTitle
-{
-    if (cancelTitle != nil && cancelTitle.length) {
-        _cancelTitle = cancelTitle;
-    }
+- (void)setBackgroundColor:(UIColor *)backgroundColor {
+    _backgroundColor = backgroundColor;
+    _hasCustomBackgroundColor = (backgroundColor != nil);
 }
 
+- (UIColor *)backgroudColor {
+    return self.backgroundColor;
+}
 
--(void)setLinkArr:(NSArray<NSString *> *)linkArr
-{
-    if (linkArr != nil && linkArr.count > 0 ) {
-        _linkArr = linkArr;
+- (void)setBackgroudColor:(UIColor *)backgroudColor {
+    self.backgroundColor = backgroudColor;
+}
+
+- (CGFloat)lineSapceHeight {
+    return self.lineSpaceHeight;
+}
+
+- (void)setLineSapceHeight:(CGFloat)lineSapceHeight {
+    self.lineSpaceHeight = lineSapceHeight;
+}
+
+- (void)setTitle:(NSString *)title {
+    _title = title.length > 0 ? [title copy] : nil;
+}
+
+- (void)setContent:(NSString *)content {
+    _content = [content copy];
+}
+
+- (void)setSureTitle:(NSString *)sureTitle {
+    if (sureTitle.length > 0) {
+        _sureTitle = [sureTitle copy];
     }
 }
 
-
--(void)setHighlightArr:(NSArray<NSString *> *)highlightArr
-{
-    if (highlightArr != nil && highlightArr.count > 0 ) {
-        _highlightArr = highlightArr;
+- (void)setCancelTitle:(NSString *)cancelTitle {
+    if (cancelTitle.length > 0) {
+        _cancelTitle = [cancelTitle copy];
     }
 }
 

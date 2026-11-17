@@ -7,425 +7,452 @@
 //
 
 #import "WDDateIntervalAlertView.h"
+#import "WDSelectAlertHelper.h"
 
 @interface WDDateIntervalAlertView ()
 
-/**  取消*/
-@property(nonatomic, strong) UIButton *cancelButton;
-
-/**  确定*/
-@property(nonatomic, strong) UIButton *sureButton;
-
-/**  开始时间*/
-@property(nonatomic, strong) WDDateIntervalPickView *beginPicker;
-/**  至*/
-@property(nonatomic, strong) UILabel *toLabel;
-/**  结束时间*/
-@property(nonatomic, strong) WDDateIntervalPickView *endPicker;
+@property (nonatomic, strong) UIVisualEffectView *backgroundEffectView;
+@property (nonatomic, strong) UIButton *cancelButton;
+@property (nonatomic, strong) UIButton *sureButton;
+@property (nonatomic, strong) UIView *toolbarLine;
+@property (nonatomic, strong) WDDateIntervalPickView *beginPicker;
+@property (nonatomic, strong) UILabel *toLabel;
+@property (nonatomic, strong) WDDateIntervalPickView *endPicker;
 
 @end
 
 @implementation WDDateIntervalAlertView
 
-// MARK: -  life cycle
 @synthesize styleModel = _styleModel;
-- (instancetype)initWithModel:(WDDateIntervalAlertStyleModel *)model;
-{
-  if (self = [super initWithFrame:CGRectZero]) {
-    self.styleModel = model;
-    [self loadConfig];
-    [self addSubviews];
-    [self loadData];
-  }
-  return self;
+
+- (instancetype)initWithModel:(WDDateIntervalAlertStyleModel *)model {
+    if (self = [super initWithFrame:CGRectZero]) {
+        _styleModel = model ?: [WDDateIntervalAlertStyleModel defaultStyle];
+        [self loadConfig];
+        [self addSubviews];
+        [self syncStyleModelToPickers];
+    }
+    return self;
 }
 
 - (void)awakeFromNib {
-  [super awakeFromNib];
-  [self loadConfig];
-  [self addSubviews];
-  [self loadData];
+    [super awakeFromNib];
+    if (!_styleModel) {
+        _styleModel = [WDDateIntervalAlertStyleModel defaultStyle];
+    }
+    [self loadConfig];
+    [self addSubviews];
+    [self syncStyleModelToPickers];
+}
+
+- (void)safeAreaInsetsDidChange {
+    [super safeAreaInsetsDidChange];
+    [self setNeedsLayout];
 }
 
 - (void)layoutSubviews {
+    [super layoutSubviews];
 
-  [super layoutSubviews];
-  CGFloat buttonHeight = 50;
-  CGSize buttonSize = CGSizeMake(90, buttonHeight);
+    self.backgroundEffectView.frame = self.bounds;
 
-  _cancelButton.frame = CGRectMake(14, 0, buttonSize.width, buttonSize.height);
-  _sureButton.frame = CGRectMake(self.frame.size.width - buttonSize.width - 14,
-                                 0, buttonSize.width, buttonSize.height);
+    CGFloat width = CGRectGetWidth(self.bounds);
+    CGFloat height = CGRectGetHeight(self.bounds);
+    CGFloat buttonHeight = 50.0;
+    CGSize buttonSize = CGSizeMake(90.0, buttonHeight);
+    CGFloat lineHeight = 1.0 / MAX([WDSelectAlertHelper activeWindowScene].screen.scale, 2.0);
+    CGFloat safeBottom = [WDSelectAlertHelper safeAreaInsetsForView:self].bottom;
 
-  CGFloat toWidth = 50;
-  CGFloat pickerWidth = (self.frame.size.width - toWidth) / 2;
-  _beginPicker.frame = CGRectMake(0, buttonHeight, pickerWidth,
-                                  self.frame.size.height - buttonHeight);
-  _toLabel.frame = CGRectMake(pickerWidth, buttonHeight, toWidth,
-                              self.frame.size.height - buttonHeight);
-  _endPicker.frame =
-      CGRectMake(pickerWidth + toWidth, buttonHeight, pickerWidth,
-                 self.frame.size.height - buttonHeight);
+    self.cancelButton.frame = CGRectMake(16.0, 0, buttonSize.width, buttonSize.height);
+    self.sureButton.frame = CGRectMake(MAX(16.0, width - buttonSize.width - 16.0), 0, buttonSize.width, buttonSize.height);
+    self.toolbarLine.frame = CGRectMake(0, buttonHeight - lineHeight, width, lineHeight);
+
+    CGFloat toWidth = 50.0;
+    CGFloat pickerWidth = MAX(0, (width - toWidth) / 2.0);
+    CGFloat pickerHeight = MAX(0, height - buttonHeight - safeBottom);
+
+    self.beginPicker.frame = CGRectMake(0, buttonHeight, pickerWidth, pickerHeight);
+    self.toLabel.frame = CGRectMake(pickerWidth, buttonHeight, toWidth, pickerHeight);
+    self.endPicker.frame = CGRectMake(pickerWidth + toWidth, buttonHeight, pickerWidth, pickerHeight);
 }
 
-// MARK: -  private methods
+#pragma mark - Private Methods
 
-// 加载初始配置
 - (void)loadConfig {
-  self.backgroundColor = _styleModel.backgroudColor;
+    self.backgroundColor = UIColor.clearColor;
 }
 
-// 添加view
 - (void)addSubviews {
-  [self addSubview:self.cancelButton];
-  [self addSubview:self.sureButton];
-  [self addSubview:self.beginPicker];
-  [self addSubview:self.toLabel];
-  [self addSubview:self.endPicker];
+    [self addSubview:self.backgroundEffectView];
+    UIView *container = self.backgroundEffectView.contentView;
+    [container addSubview:self.cancelButton];
+    [container addSubview:self.sureButton];
+    [container addSubview:self.toolbarLine];
+    [container addSubview:self.beginPicker];
+    [container addSubview:self.toLabel];
+    [container addSubview:self.endPicker];
 }
 
-// 加载数据
-- (void)loadData {
+- (void)syncStyleModelToPickers {
+    CACornerMask topCorners = kCALayerMinXMinYCorner | kCALayerMaxXMinYCorner;
+    [WDSelectAlertHelper applyMaterialStyle:self.styleModel.materialStyle
+                            backgroundColor:self.styleModel.backgroundColor
+                       hasCustomBackground:self.styleModel.hasCustomBackgroundColor
+                               cornerRadius:self.styleModel.cornerRadius
+                              maskedCorners:topCorners
+                               toEffectView:self.backgroundEffectView];
+    UIColor *pickerFill = (self.styleModel.materialStyle == WDAlertMaterialStyleSolid)
+                              ? (self.styleModel.dateBackgroundColor ?: UIColor.secondarySystemGroupedBackgroundColor)
+                              : UIColor.clearColor;
+    self.beginPicker.backgroundColor = pickerFill;
+    self.endPicker.backgroundColor = pickerFill;
+    self.toLabel.backgroundColor = pickerFill;
+    self.toolbarLine.backgroundColor = self.styleModel.lineSpaceColor;
+
+    self.beginPicker.style = self.styleModel.style;
+    self.endPicker.style = self.styleModel.style;
+    self.beginPicker.currentValue = self.styleModel.beginDate ?: (self.styleModel.style == WDDateIntervalAlertStyleHH ? @"08" : @"08:00");
+    self.endPicker.currentValue = self.styleModel.endDate ?: (self.styleModel.style == WDDateIntervalAlertStyleHH ? @"12" : @"12:00");
 }
 
 - (void)clickAction:(UIButton *)sender {
-  if (_didClickButton) {
-    BOOL isSure = [sender isEqual:_sureButton];
-    _didClickButton(isSure, _beginPicker.currentValue, _endPicker.currentValue);
-  }
-}
-
-- (void)dateChanged:(WDDateIntervalPickView *)sender value:(NSString *)value;
-{
-  if ([_beginPicker.currentValue isEqualToString:_endPicker.currentValue]) {
-    if ([sender isEqual:_beginPicker]) {
-      [_endPicker nextStep];
-    } else {
-      [_beginPicker previousStep];
+    if (self.didClickButton) {
+        BOOL isSure = (sender == self.sureButton);
+        self.didClickButton(isSure, self.beginPicker.currentValue ?: @"", self.endPicker.currentValue ?: @"");
     }
-  } else {
-    if (_didSelectDate) {
-      _didSelectDate(_beginPicker.currentValue, _endPicker.currentValue);
+}
+
+- (void)dateChanged:(WDDateIntervalPickView *)sender {
+    if ([self.beginPicker.currentValue isEqualToString:self.endPicker.currentValue]) {
+        if (sender == self.beginPicker) {
+            [self.endPicker nextStep];
+        } else {
+            [self.beginPicker previousStep];
+        }
     }
-  }
+    if (self.didSelectDate) {
+        self.didSelectDate(self.beginPicker.currentValue ?: @"", self.endPicker.currentValue ?: @"");
+    }
 }
 
-// MARK: -  public methods
-- (void)setStyleModel:(WDDateIntervalAlertStyleModel *_Nonnull)styleModel {
-  _styleModel = styleModel;
-  self.beginPicker.currentValue = styleModel.beginDate;
-  self.endPicker.currentValue = styleModel.endDate;
+#pragma mark - Public Methods
+
+- (void)setStyleModel:(WDDateIntervalAlertStyleModel *)styleModel {
+    _styleModel = styleModel ?: [WDDateIntervalAlertStyleModel defaultStyle];
+    [self syncStyleModelToPickers];
+    [self setNeedsLayout];
 }
 
-// MARK: -  getters and setters
+#pragma mark - Getters
+
+- (UIVisualEffectView *)backgroundEffectView {
+    if (!_backgroundEffectView) {
+        _backgroundEffectView = [[UIVisualEffectView alloc] initWithEffect:nil];
+    }
+    return _backgroundEffectView;
+}
+
 - (UIButton *)cancelButton {
-  if (!_cancelButton) {
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-    button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-    button.titleLabel.font = [UIFont systemFontOfSize:18];
-    [button setTitle:_styleModel.cancelTitle forState:UIControlStateNormal];
-    [button setTitleColor:_styleModel.cancelTitleColor
-                 forState:UIControlStateNormal];
-    [button addTarget:self
-                  action:@selector(clickAction:)
-        forControlEvents:UIControlEventTouchUpInside];
-    _cancelButton = button;
-  }
-  return _cancelButton;
+    if (!_cancelButton) {
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+        button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        button.titleLabel.font = [UIFont systemFontOfSize:17 weight:UIFontWeightRegular];
+        [button setTitle:self.styleModel.cancelTitle forState:UIControlStateNormal];
+        [button setTitleColor:self.styleModel.cancelTitleColor forState:UIControlStateNormal];
+        [button addTarget:self action:@selector(clickAction:) forControlEvents:UIControlEventTouchUpInside];
+        _cancelButton = button;
+    }
+    return _cancelButton;
 }
 
 - (UIButton *)sureButton {
-  if (!_sureButton) {
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-    button.contentHorizontalAlignment =
-        UIControlContentHorizontalAlignmentRight;
-    button.titleLabel.font = [UIFont boldSystemFontOfSize:18];
-    [button setTitle:_styleModel.sureTitle forState:UIControlStateNormal];
-    [button setTitleColor:_styleModel.sureTitleColor
-                 forState:UIControlStateNormal];
-    [button addTarget:self
-                  action:@selector(clickAction:)
-        forControlEvents:UIControlEventTouchUpInside];
-    _sureButton = button;
-  }
-  return _sureButton;
+    if (!_sureButton) {
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+        button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+        button.titleLabel.font = [UIFont systemFontOfSize:17 weight:UIFontWeightSemibold];
+        [button setTitle:self.styleModel.sureTitle forState:UIControlStateNormal];
+        [button setTitleColor:self.styleModel.sureTitleColor forState:UIControlStateNormal];
+        [button addTarget:self action:@selector(clickAction:) forControlEvents:UIControlEventTouchUpInside];
+        _sureButton = button;
+    }
+    return _sureButton;
+}
+
+- (UIView *)toolbarLine {
+    if (!_toolbarLine) {
+        _toolbarLine = [[UIView alloc] init];
+        _toolbarLine.backgroundColor = self.styleModel.lineSpaceColor;
+    }
+    return _toolbarLine;
 }
 
 - (WDDateIntervalPickView *)beginPicker {
-  if (!_beginPicker) {
-    __weak typeof(self) weakSelf = self;
-
-    WDDateIntervalPickView *pick = [[WDDateIntervalPickView alloc] init];
-    pick.style = _styleModel.style;
-    pick.backgroundColor = _styleModel.dateBackgroudColor;
-    pick.textColor = _styleModel.dateTextColor;
-    pick.lineSpaceColor = _styleModel.lineSpaceColor;
-    pick.currentValue = _styleModel.beginDate;
-    pick.valueChangeed =
-        ^(WDDateIntervalPickView *_Nonnull view, NSString *_Nonnull value) {
-          [weakSelf dateChanged:view value:value];
+    if (!_beginPicker) {
+        __weak typeof(self) weakSelf = self;
+        WDDateIntervalPickView *pick = [[WDDateIntervalPickView alloc] init];
+        pick.style = self.styleModel.style;
+        pick.textColor = self.styleModel.dateTextColor;
+        pick.lineSpaceColor = self.styleModel.lineSpaceColor;
+        pick.valueChanged = ^(WDDateIntervalPickView * _Nonnull view, NSString * _Nonnull value) {
+            [weakSelf dateChanged:view];
         };
-    _beginPicker = pick;
-  }
-
-  return _beginPicker;
+        _beginPicker = pick;
+    }
+    return _beginPicker;
 }
 
 - (UILabel *)toLabel {
-  if (!_toLabel) {
-    UILabel *view = [[UILabel alloc] init];
-    view.textAlignment = NSTextAlignmentCenter;
-    view.backgroundColor = _styleModel.dateBackgroudColor;
-    view.textColor = _styleModel.toTitleColor;
-    view.text = _styleModel.toTitle;
-    _toLabel = view;
-  }
-  return _toLabel;
+    if (!_toLabel) {
+        UILabel *view = [[UILabel alloc] init];
+        view.textAlignment = NSTextAlignmentCenter;
+        view.font = [UIFont systemFontOfSize:16 weight:UIFontWeightMedium];
+        view.textColor = self.styleModel.toTitleColor;
+        view.text = self.styleModel.toTitle;
+        _toLabel = view;
+    }
+    return _toLabel;
 }
 
 - (WDDateIntervalPickView *)endPicker {
-  if (!_endPicker) {
-    __weak typeof(self) weakSelf = self;
-
-    WDDateIntervalPickView *pick = [[WDDateIntervalPickView alloc] init];
-    pick.style = _styleModel.style;
-    pick.backgroundColor = _styleModel.dateBackgroudColor;
-    pick.textColor = _styleModel.dateTextColor;
-    pick.lineSpaceColor = _styleModel.lineSpaceColor;
-    pick.currentValue = _styleModel.endDate;
-    pick.valueChangeed =
-        ^(WDDateIntervalPickView *_Nonnull view, NSString *_Nonnull value) {
-          [weakSelf dateChanged:view value:value];
+    if (!_endPicker) {
+        __weak typeof(self) weakSelf = self;
+        WDDateIntervalPickView *pick = [[WDDateIntervalPickView alloc] init];
+        pick.style = self.styleModel.style;
+        pick.textColor = self.styleModel.dateTextColor;
+        pick.lineSpaceColor = self.styleModel.lineSpaceColor;
+        pick.valueChanged = ^(WDDateIntervalPickView * _Nonnull view, NSString * _Nonnull value) {
+            [weakSelf dateChanged:view];
         };
-    _endPicker = pick;
-  }
-
-  return _endPicker;
+        _endPicker = pick;
+    }
+    return _endPicker;
 }
 
 @end
 
-static NSInteger DateSelectMultiple = 100;
+#pragma mark - WDDateIntervalPickView
 
-@interface WDDateIntervalPickView () <UIPickerViewDelegate,
-                                      UIPickerViewDataSource>
-@property(nonatomic, strong) NSArray<NSString *> *showHourData;
-@property(nonatomic, strong) NSArray<NSString *> *showMinuteData;
-/**  选中index*/
-@property(nonatomic, strong) NSMutableArray<NSNumber *> *indexArr;
+static NSInteger const kIntervalCycleMultiplier = 100;
+
+@interface WDDateIntervalPickView () <UIPickerViewDelegate, UIPickerViewDataSource>
+
+@property (nonatomic, strong) NSArray<NSString *> *showHourData;
+@property (nonatomic, strong) NSArray<NSString *> *showMinuteData;
+@property (nonatomic, strong) NSMutableArray<NSNumber *> *indexArr;
 
 @end
 
 @implementation WDDateIntervalPickView
 
-// MARK: -  life cycle
-
 - (instancetype)initWithFrame:(CGRect)frame {
-  if (self = [super initWithFrame:frame]) {
-    [self loadConfig];
-    [self addSubviews];
-    [self loadData];
-  }
-  return self;
+    if (self = [super initWithFrame:frame]) {
+        [self loadConfig];
+    }
+    return self;
 }
 
 - (void)awakeFromNib {
-  [super awakeFromNib];
-  [self loadConfig];
-  [self addSubviews];
-  [self loadData];
+    [super awakeFromNib];
+    [self loadConfig];
 }
 
-- (void)layoutSubviews {
-  [super layoutSubviews];
-}
-
-// MARK: -  private methods
-
-// 加载初始配置
 - (void)loadConfig {
-  self.delegate = self;
-  self.dataSource = self;
-
-  [self scrollToIndex:_indexArr animated:NO];
-}
-
-// 添加view
-- (void)addSubviews {
-}
-
-// 加载数据
-- (void)loadData {
+    self.delegate = self;
+    self.dataSource = self;
+    _textColor = UIColor.labelColor;
+    [self setStyle:WDDateIntervalAlertStyleHH];
 }
 
 - (void)scrollToIndex:(NSArray<NSNumber *> *)indexArr animated:(BOOL)animated {
-  for (int i = 0; i < indexArr.count; i++) {
-    NSInteger row = indexArr[i].integerValue;
-    [self selectRow:row inComponent:i animated:animated];
-  }
-}
-
-// MARK: -  public methods
-/// 前进一步
-- (void)previousStep;
-{
-  NSInteger index = _indexArr.lastObject.integerValue;
-  if (index <= 0) {
-    return;
-  }
-  [_indexArr replaceObjectAtIndex:_indexArr.count - 1 withObject:@(index - 1)];
-
-  /// 借位
-  if (_indexArr.count > 1 && index % self.showMinuteData.count == 0) {
-    NSInteger hourIndex = _indexArr[_indexArr.count - 2].integerValue;
-    // 修复：同样保护小时列不低于 0
-    if (hourIndex > 0) {
-      [_indexArr replaceObjectAtIndex:_indexArr.count - 2
-                           withObject:@(hourIndex - 1)];
+    [self reloadAllComponents];
+    for (NSUInteger i = 0; i < indexArr.count; i++) {
+        if ((NSInteger)i >= [self numberOfComponents]) {
+            break;
+        }
+        NSInteger maxRows = [self numberOfRowsInComponent:(NSInteger)i];
+        if (maxRows <= 0) {
+            continue;
+        }
+        NSInteger row = MIN(MAX(0, indexArr[i].integerValue), maxRows - 1);
+        [self selectRow:row inComponent:(NSInteger)i animated:animated];
     }
-  }
-
-  [self updateDateValue];
-  [self scrollToIndex:_indexArr animated:YES];
 }
 
-/// 后退一步
-- (void)nextStep;
-{
-  NSInteger index = _indexArr.lastObject.integerValue + 1;
-  [_indexArr replaceObjectAtIndex:_indexArr.count - 1 withObject:@(index)];
-  [self updateDateValue];
-  [self scrollToIndex:_indexArr animated:YES];
-}
+#pragma mark - Public Step Methods
 
-/// 刷新
-- (void)updateDateValue;
-{
-  NSMutableString *string = [NSMutableString string];
-  for (int i = 0; i < _indexArr.count; i++) {
-    NSInteger index = _indexArr[i].integerValue;
-    if (i == 0) {
-      [string appendString:self.showHourData[index % self.showHourData.count]];
-    } else {
-      [string
-          appendFormat:@":%@",
-                       self.showMinuteData[index % self.showMinuteData.count]];
+- (void)previousStep {
+    if (self.indexArr.count == 0) {
+        return;
     }
-  }
-  _currentValue = string;
+    NSUInteger lastIdx = self.indexArr.count - 1;
+    NSInteger current = self.indexArr[lastIdx].integerValue;
+    if (current <= 0) {
+        return;
+    }
+    [self.indexArr replaceObjectAtIndex:lastIdx withObject:@(current - 1)];
+
+    // 分钟从 00 退回 59 时向小时借位
+    if (self.indexArr.count > 1 && (current % (NSInteger)self.showMinuteData.count == 0)) {
+        NSInteger hourIndex = self.indexArr[0].integerValue;
+        if (hourIndex > 0) {
+            [self.indexArr replaceObjectAtIndex:0 withObject:@(hourIndex - 1)];
+        }
+    }
+
+    [self updateDateValue];
+    [self scrollToIndex:self.indexArr animated:YES];
 }
 
-// MARK: -  getters and setters
+- (void)nextStep {
+    if (self.indexArr.count == 0) {
+        return;
+    }
+    NSUInteger lastIdx = self.indexArr.count - 1;
+    NSInteger maxRows = [self numberOfRowsInComponent:(NSInteger)lastIdx];
+    NSInteger next = self.indexArr[lastIdx].integerValue + 1;
+    if (next >= maxRows) {
+        return;
+    }
+    [self.indexArr replaceObjectAtIndex:lastIdx withObject:@(next)];
+
+    // 分钟从 59 进到 00 时向小时进位
+    if (self.indexArr.count > 1 && (next % (NSInteger)self.showMinuteData.count == 0)) {
+        NSInteger hourIndex = self.indexArr[0].integerValue;
+        NSInteger maxHourRows = [self numberOfRowsInComponent:0];
+        if (hourIndex + 1 < maxHourRows) {
+            [self.indexArr replaceObjectAtIndex:0 withObject:@(hourIndex + 1)];
+        }
+    }
+
+    [self updateDateValue];
+    [self scrollToIndex:self.indexArr animated:YES];
+}
+
+- (void)updateDateValue {
+    NSMutableString *string = [NSMutableString string];
+    for (NSUInteger i = 0; i < self.indexArr.count; i++) {
+        NSUInteger index = (NSUInteger)MAX(0, self.indexArr[i].integerValue);
+        if (i == 0) {
+            [string appendString:self.showHourData[index % self.showHourData.count]];
+        } else {
+            [string appendFormat:@":%@", self.showMinuteData[index % self.showMinuteData.count]];
+        }
+    }
+    _currentValue = [string copy];
+}
+
+#pragma mark - Getters & Setters
+
 - (void)setStyle:(WDDateIntervalAlertStyle)style {
-  _style = style;
-
-  _indexArr = [NSMutableArray array];
-  [_indexArr addObject:@(DateSelectMultiple * self.showHourData.count /
-                         2)]; // index 0 = 小时
-
-  if (_style == WDDateIntervalAlertStyleHHMM) {
-    [_indexArr addObject:@(DateSelectMultiple * self.showMinuteData.count /
-                           2)]; // index 1 = 分钟
-  }
+    _style = style;
+    _indexArr = [NSMutableArray array];
+    [_indexArr addObject:@(kIntervalCycleMultiplier * (NSInteger)self.showHourData.count / 2)];
+    if (style == WDDateIntervalAlertStyleHHMM) {
+        [_indexArr addObject:@(kIntervalCycleMultiplier * (NSInteger)self.showMinuteData.count / 2)];
+    }
+    [self updateDateValue];
 }
 
 - (void)setCurrentValue:(NSString *)currentValue {
-  NSString *hour = [currentValue componentsSeparatedByString:@":"].firstObject;
-  NSString *min = [currentValue componentsSeparatedByString:@":"].lastObject;
-
-  _currentValue = _style == WDDateIntervalAlertStyleHH ? hour : currentValue;
-
-  for (int i = 0; i < self.showHourData.count; i++) {
-    if ([hour isEqualToString:self.showHourData[i]]) {
-      NSInteger index = DateSelectMultiple * self.showHourData.count / 2 + i;
-      [_indexArr replaceObjectAtIndex:0 withObject:@(index)];
-      break;
+    if (currentValue.length == 0) {
+        [self updateDateValue];
+        [self scrollToIndex:self.indexArr animated:NO];
+        return;
     }
-  }
 
-  for (int i = 0; i < self.showMinuteData.count; i++) {
-    if ([min isEqualToString:self.showMinuteData[i]]) {
-      NSInteger index = DateSelectMultiple * self.showMinuteData.count / 2 + i;
-      if (_indexArr.count > 1) {
-        [_indexArr replaceObjectAtIndex:1 withObject:@(index)];
-      }
+    NSArray<NSString *> *parts = [currentValue componentsSeparatedByString:@":"];
+    NSString *hour = parts.firstObject ?: @"00";
+    NSString *min = (parts.count > 1) ? parts[1] : @"00";
 
-      break;
+    for (NSUInteger i = 0; i < self.showHourData.count; i++) {
+        if ([hour isEqualToString:self.showHourData[i]]) {
+            NSInteger index = (kIntervalCycleMultiplier * (NSInteger)self.showHourData.count / 2) + (NSInteger)i;
+            [self.indexArr replaceObjectAtIndex:0 withObject:@(index)];
+            break;
+        }
     }
-  }
-  [self scrollToIndex:_indexArr animated:NO];
+
+    if (self.indexArr.count > 1) {
+        for (NSUInteger i = 0; i < self.showMinuteData.count; i++) {
+            if ([min isEqualToString:self.showMinuteData[i]]) {
+                NSInteger index = (kIntervalCycleMultiplier * (NSInteger)self.showMinuteData.count / 2) + (NSInteger)i;
+                [self.indexArr replaceObjectAtIndex:1 withObject:@(index)];
+                break;
+            }
+        }
+    }
+
+    [self updateDateValue];
+    [self scrollToIndex:self.indexArr animated:NO];
 }
 
 - (NSArray<NSString *> *)showHourData {
-  if (!_showHourData) {
-    NSMutableArray<NSString *> *arr = [NSMutableArray array];
-    for (int i = 0; i < 24; i++) {
-      [arr addObject:[NSString stringWithFormat:@"%02d", i]];
+    if (!_showHourData) {
+        NSMutableArray<NSString *> *arr = [NSMutableArray arrayWithCapacity:24];
+        for (int i = 0; i < 24; i++) {
+            [arr addObject:[NSString stringWithFormat:@"%02d", i]];
+        }
+        _showHourData = [arr copy];
     }
-    _showHourData = arr;
-  }
-  return _showHourData;
+    return _showHourData;
 }
 
 - (NSArray<NSString *> *)showMinuteData {
-  if (!_showMinuteData) {
-    NSMutableArray<NSString *> *arr = [NSMutableArray array];
-    for (int i = 0; i < 60; i++) {
-      [arr addObject:[NSString stringWithFormat:@"%02d", i]];
+    if (!_showMinuteData) {
+        NSMutableArray<NSString *> *arr = [NSMutableArray arrayWithCapacity:60];
+        for (int i = 0; i < 60; i++) {
+            [arr addObject:[NSString stringWithFormat:@"%02d", i]];
+        }
+        _showMinuteData = [arr copy];
     }
-    _showMinuteData = arr;
-  }
-  return _showMinuteData;
+    return _showMinuteData;
 }
 
-// MARK: -  UIPickerViewDelegate
-- (NSInteger)numberOfComponentsInPickerView:(nonnull UIPickerView *)pickerView {
-  return _indexArr.count;
+- (void (^)(WDDateIntervalPickView *, NSString *))valueChangeed {
+    return self.valueChanged;
 }
 
-- (NSInteger)pickerView:(nonnull UIPickerView *)pickerView
-    numberOfRowsInComponent:(NSInteger)component {
-  NSInteger row = component == 0
-                      ? DateSelectMultiple * self.showHourData.count
-                      : DateSelectMultiple * self.showMinuteData.count;
-  return row;
+- (void)setValueChangeed:(void (^)(WDDateIntervalPickView *, NSString *))valueChangeed {
+    self.valueChanged = valueChangeed;
+}
+
+#pragma mark - UIPickerViewDataSource & Delegate
+
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
+    return (NSInteger)self.indexArr.count;
+}
+
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+    return (component == 0)
+               ? kIntervalCycleMultiplier * (NSInteger)self.showHourData.count
+               : kIntervalCycleMultiplier * (NSInteger)self.showMinuteData.count;
+}
+
+- (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component {
+    return 36.0;
 }
 
 - (UIView *)pickerView:(UIPickerView *)pickerView
             viewForRow:(NSInteger)row
           forComponent:(NSInteger)component
-           reusingView:(UIView *)view {
-  // 设置分割线的颜色
-  for (UIView *singleLine in pickerView.subviews) {
-    if (singleLine.frame.size.height < 1) {
-      singleLine.backgroundColor = _lineSpaceColor;
-    }
-  }
-
-  // 设置文字的属性
-  UILabel *label = [[UILabel alloc] init];
-  label.font = [UIFont systemFontOfSize:16];
-  label.textAlignment = NSTextAlignmentCenter;
-  NSString *title = component == 0
-                        ? self.showHourData[row % self.showHourData.count]
-                        : self.showMinuteData[row % self.showMinuteData.count];
-
-  label.text = title;
-  label.textColor = _textColor;
-
-  return label;
+           reusingView:(nullable UIView *)view {
+    UILabel *label = [view isKindOfClass:[UILabel class]] ? (UILabel *)view : [[UILabel alloc] init];
+    label.font = [UIFont systemFontOfSize:18 weight:UIFontWeightRegular];
+    label.textAlignment = NSTextAlignmentCenter;
+    label.textColor = self.textColor ?: UIColor.labelColor;
+    label.text = (component == 0)
+                     ? self.showHourData[(NSUInteger)row % self.showHourData.count]
+                     : self.showMinuteData[(NSUInteger)row % self.showMinuteData.count];
+    return label;
 }
 
-- (void)pickerView:(UIPickerView *)pickerView
-      didSelectRow:(NSInteger)row
-       inComponent:(NSInteger)component {
-  [pickerView selectRow:row inComponent:component animated:NO];
-
-  [_indexArr replaceObjectAtIndex:component withObject:@(row)];
-  [self updateDateValue];
-  if (_valueChangeed) {
-    _valueChangeed(self, _currentValue);
-  }
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+    if (component >= 0 && (NSUInteger)component < self.indexArr.count) {
+        [self.indexArr replaceObjectAtIndex:(NSUInteger)component withObject:@(row)];
+    }
+    [self updateDateValue];
+    if (self.valueChanged) {
+        self.valueChanged(self, self.currentValue ?: @"");
+    }
 }
 
 @end

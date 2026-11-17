@@ -10,6 +10,6 @@
 
 @interface WDAppDelegate : UIResponder <UIApplicationDelegate>
 
-@property (strong, nonatomic) UIWindow *window;
+@property (strong, nonatomic, nullable) UIWindow *window;
 
 @end

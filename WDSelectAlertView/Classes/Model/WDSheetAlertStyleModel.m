@@ -9,57 +9,117 @@
 #import "WDSheetAlertStyleModel.h"
 #import "WDSelectAlertHelper.h"
 
+@interface WDSheetAlertStyleModel ()
+@property (nonatomic, assign, readwrite) BOOL hasCustomBackgroundColor;
+@property (nonatomic, assign, readwrite) BOOL hasCustomCellBackgroundColor;
+@end
+
 @implementation WDSheetAlertStyleModel
 
-+(WDSheetAlertStyleModel *)defaultStyle;
-{
-    WDSheetAlertStyleModel * model = [[WDSheetAlertStyleModel alloc] init];
-    model.titleEdgeInsets = UIEdgeInsetsMake(12, 14, 12, 14);
++ (WDSheetAlertStyleModel *)defaultStyle {
+    WDSheetAlertStyleModel *model = [[WDSheetAlertStyleModel alloc] init];
+    model.materialStyle = WDAlertMaterialStyleAutomatic;
+    model.sheetCornerRadius = [WDSelectAlertHelper isIOS26OrLater] ? 24.0 : 16.0;
+    model.titleEdgeInsets = UIEdgeInsetsMake(14, 16, 14, 16);
     model.maxShowCount = 6;
-    model.cellHeight = [WDSelectAlertHelper adaptScreenSize:60];
+    model.cellHeight = [WDSelectAlertHelper adaptScreenSize:56.0];
     model.cellNumberOfLines = 1;
-    model.cellEdgeInsets = UIEdgeInsetsMake(4, 14, 4, 14);
-    model.lineHeight = [WDSelectAlertHelper adaptScreenSize:0.7];
-    model.titleFont = [UIFont fontWithName:@"PingFangSC-Medium" size: 14];
-    model.titleColor = [WDSelectAlertHelper toHexColor:@"#7B7B7B"];
+    model.cellEdgeInsets = UIEdgeInsetsMake(6, 16, 6, 16);
+    model.lineHeight = 1.0 / MAX([WDSelectAlertHelper activeWindowScene].screen.scale, 2.0);
+    model.titleFont = [UIFont systemFontOfSize:13 weight:UIFontWeightMedium];
+    model.titleColor = UIColor.secondaryLabelColor;
     model.titleNumberOfLines = 0;
-    model.backgroudColor = [WDSelectAlertHelper toHexColor:@"#F6F7F8"];
-    model.cellBackgroudColor = [WDSelectAlertHelper toHexColor:@"#FFFFFF"];
-    model.cellTextColor = [WDSelectAlertHelper toHexColor:@"#3E3E3E"];
+
+    model->_backgroundColor = UIColor.systemGroupedBackgroundColor;
+    model.hasCustomBackgroundColor = NO;
+    model.lineSpaceColor = UIColor.separatorColor;
+    model->_cellBackgroundColor = UIColor.secondarySystemGroupedBackgroundColor;
+    model.hasCustomCellBackgroundColor = NO;
+
+    model.cellTextColor = UIColor.labelColor;
     model.cancelTitle = @"取消";
-    model.cancelTitleTextColor = [WDSelectAlertHelper toHexColor:@"#3E3E3E"];
-    model.disableCellTextColor = [WDSelectAlertHelper toHexColor:@"#BEBEBE"];
+    model.cancelTitleTextColor = UIColor.labelColor;
+    model.disableCellTextColor = UIColor.tertiaryLabelColor;
+    model.dataArr = @[];
     model.selectedIndex = -1;
-    model.selectedTextColor = [WDSelectAlertHelper toHexColor:@"#3057DC"];
+    model.selectedEnabled = YES;
+    model.selectedTextColor = UIColor.systemBlueColor;
     model.selectedItemImage = nil;
     model.iconPositionLeft = NO;
-    model.iconSpacing = 8;
+    model.iconSpacing = 8.0;
     return model;
 }
 
--(CGRect)layoutTitleFrame;
-{
-    CGRect frame = CGRectZero;
-    if (self.title.length) {
-        CGSize maxSize = CGSizeMake(UIScreen.mainScreen.bounds.size.width - (self.titleEdgeInsets.left + self.titleEdgeInsets.right), CGFLOAT_MAX);
-        CGFloat layoutTitleHight = [WDSelectAlertHelper getFontSize:self.title Font:self.titleFont Paragraph:nil Size:maxSize].height;
-        frame = CGRectMake(self.titleEdgeInsets.left, self.titleEdgeInsets.top, maxSize.width, layoutTitleHight);
+- (CGRect)layoutTitleFrameWithMaxWidth:(CGFloat)maxWidth {
+    if (self.title.length == 0 || maxWidth <= 0) {
+        return CGRectZero;
     }
-    return frame;
+    CGFloat contentWidth = MAX(0, maxWidth - (self.titleEdgeInsets.left + self.titleEdgeInsets.right));
+    CGSize maxSize = CGSizeMake(contentWidth, CGFLOAT_MAX);
+    CGFloat layoutTitleHeight = ceil([WDSelectAlertHelper getFontSize:self.title
+                                                                 Font:self.titleFont
+                                                            Paragraph:nil
+                                                                 Size:maxSize].height);
+    return CGRectMake(self.titleEdgeInsets.left, self.titleEdgeInsets.top, contentWidth, layoutTitleHeight);
 }
 
--(CGRect)layoutTitleViewFrame;
-{
-    CGRect frame = self.layoutTitleFrame;
-    if (frame.size.height > 0) {
-        frame = CGRectMake(0, 0, frame.size.width + (self.titleEdgeInsets.left + self.titleEdgeInsets.right), frame.size.height + (self.titleEdgeInsets.top + self.titleEdgeInsets.bottom));
+- (CGRect)layoutTitleViewFrameWithMaxWidth:(CGFloat)maxWidth {
+    CGRect labelFrame = [self layoutTitleFrameWithMaxWidth:maxWidth];
+    if (labelFrame.size.height <= 0) {
+        return CGRectZero;
     }
-    return frame;
+    return CGRectMake(0,
+                      0,
+                      maxWidth,
+                      labelFrame.size.height + self.titleEdgeInsets.top + self.titleEdgeInsets.bottom);
 }
 
--(CGFloat)safeEdgeBottomMargin
-{
-    return WDSelectAlertHelper.safeEdgeBottomMargin;
+- (CGRect)layoutTitleFrame {
+    return [self layoutTitleFrameWithMaxWidth:[WDSelectAlertHelper currentWindowBounds].size.width];
+}
+
+- (CGRect)layoutTitleViewFrame {
+    return [self layoutTitleViewFrameWithMaxWidth:[WDSelectAlertHelper currentWindowBounds].size.width];
+}
+
+- (CGFloat)safeEdgeBottomMargin {
+    return [WDSelectAlertHelper safeEdgeBottomMargin];
+}
+
+#pragma mark - Backward Compatible Forwarding
+
+- (void)setBackgroundColor:(UIColor *)backgroundColor {
+    _backgroundColor = backgroundColor;
+    _hasCustomBackgroundColor = (backgroundColor != nil);
+}
+
+- (UIColor *)backgroudColor {
+    return self.backgroundColor;
+}
+
+- (void)setBackgroudColor:(UIColor *)backgroudColor {
+    self.backgroundColor = backgroudColor;
+}
+
+- (void)setCellBackgroundColor:(UIColor *)cellBackgroundColor {
+    _cellBackgroundColor = cellBackgroundColor;
+    _hasCustomCellBackgroundColor = (cellBackgroundColor != nil);
+}
+
+- (UIColor *)cellBackgroudColor {
+    return self.cellBackgroundColor;
+}
+
+- (void)setCellBackgroudColor:(UIColor *)cellBackgroudColor {
+    self.cellBackgroundColor = cellBackgroudColor;
+}
+
+- (NSArray<NSString *> *)disAbleDataArr {
+    return self.disabledDataArr;
+}
+
+- (void)setDisAbleDataArr:(NSArray<NSString *> *)disAbleDataArr {
+    self.disabledDataArr = disAbleDataArr;
 }
 
 @end

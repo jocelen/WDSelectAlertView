@@ -9,25 +9,56 @@
 #import "WDDateIntervalAlertStyleModel.h"
 #import "WDSelectAlertHelper.h"
 
+@interface WDDateIntervalAlertStyleModel ()
+@property (nonatomic, assign, readwrite) BOOL hasCustomBackgroundColor;
+@end
+
 @implementation WDDateIntervalAlertStyleModel
 
-+(WDDateIntervalAlertStyleModel *)defaultStyle;
-{
-    WDDateIntervalAlertStyleModel * model = [WDDateIntervalAlertStyleModel new];
++ (WDDateIntervalAlertStyleModel *)defaultStyle {
+    WDDateIntervalAlertStyleModel *model = [[WDDateIntervalAlertStyleModel alloc] init];
+    model.materialStyle = WDAlertMaterialStyleAutomatic;
+    model.cornerRadius = [WDSelectAlertHelper isIOS26OrLater] ? 24.0 : 16.0;
     model.style = WDDateIntervalAlertStyleHH;
-    model.backgroudColor = [WDSelectAlertHelper toHexColor:@"#F6F7F8"];
-    model.dateTextColor = [WDSelectAlertHelper toHexColor:@"#5B5B5B"];
-    model.dateBackgroudColor = [WDSelectAlertHelper toHexColor:@"#FFFFFF"];
-    model.lineSpaceColor = [WDSelectAlertHelper toHexColor:@"#EAECED"];
+    model->_backgroundColor = UIColor.systemGroupedBackgroundColor;
+    model.hasCustomBackgroundColor = NO;
+    model->_dateBackgroundColor = UIColor.secondarySystemGroupedBackgroundColor;
+    model.dateTextColor = UIColor.labelColor;
+    model.lineSpaceColor = UIColor.separatorColor;
     model.locale = @"zh-Hans";
     model.cancelTitle = @"取消";
-    model.cancelTitleColor =  [WDSelectAlertHelper toHexColor:@"#7B7B7B"];
+    model.cancelTitleColor = UIColor.secondaryLabelColor;
     model.toTitle = @"至";
-    model.toTitleColor = [WDSelectAlertHelper toHexColor:@"#3E3E3E"];
+    model.toTitleColor = UIColor.labelColor;
     model.sureTitle = @"确定";
-    model.sureTitleColor = [WDSelectAlertHelper toHexColor:@"#DC3045"];
-    
+    model.sureTitleColor = [UIColor colorWithDynamicProvider:^UIColor * _Nonnull(UITraitCollection * _Nonnull traitCollection) {
+        if (traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+            return [WDSelectAlertHelper toHexColor:@"#FF4D61"];
+        }
+        return [WDSelectAlertHelper toHexColor:@"#DC3045"];
+    }];
     return model;
+}
+
+- (void)setBackgroundColor:(UIColor *)backgroundColor {
+    _backgroundColor = backgroundColor;
+    _hasCustomBackgroundColor = (backgroundColor != nil);
+}
+
+- (UIColor *)backgroudColor {
+    return self.backgroundColor;
+}
+
+- (void)setBackgroudColor:(UIColor *)backgroudColor {
+    self.backgroundColor = backgroudColor;
+}
+
+- (UIColor *)dateBackgroudColor {
+    return self.dateBackgroundColor;
+}
+
+- (void)setDateBackgroudColor:(UIColor *)dateBackgroudColor {
+    self.dateBackgroundColor = dateBackgroudColor;
 }
 
 @end

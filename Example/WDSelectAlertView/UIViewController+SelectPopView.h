@@ -7,53 +7,55 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "WDSelectAlertDefineHeader.h"
-#import "WDSelectAlertStyleModel.h"
-#import "WDDateIntervalAlertStyleModel.h"
-#import "WDDateAlertStyleModel.h"
+#import <WDSelectAlertView/WDAlertView.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface UIViewController (SelectPopView)
 
-// MARK: -  系统弹框
-/// 选择弹框   取消/确定
--(void)showAlertSelect:(NSString *)message selectAction:(selectOptionsBlcok _Nullable)handler;
--(void)showAlertSelect:(NSString * _Nullable)title message:(NSString *)message selectAction:(selectOptionsBlcok _Nullable)handler;
--(void)showAlertSelect:(NSString * _Nullable)title message:(NSString *)message sureTitle:(NSString * _Nullable)sureTitle selectAction:(selectOptionsBlcok _Nullable)handler;
--(void)showAlertSelect:(NSString * _Nullable)title message:(NSString *)message sureTitle:(NSString * _Nullable)sureTitle cancelTitle:(NSString * _Nullable)cancelTitle selectAction:(selectOptionsBlcok _Nullable)handler;
+/// 示例工程演示用：当前选中的弹窗材质风格（默认 WDAlertMaterialStyleAutomatic）
+@property (nonatomic, assign) WDAlertMaterialStyle wd_demoMaterialStyle;
 
-/// 确认弹框   确定
--(void)showAlertSure:(NSString * _Nullable)title message:(NSString *)message sureTitle:(NSString * _Nullable)sureTitle selectAction:(selectOptionsBlcok _Nullable)handler;
+// MARK: - 确认/选择弹框
+- (void)showAlertSelect:(NSString *)message selectAction:(nullable WDAlertSelectOptionsBlock)handler;
+- (void)showAlertSelect:(nullable NSString *)title message:(NSString *)message selectAction:(nullable WDAlertSelectOptionsBlock)handler;
+- (void)showAlertSelect:(nullable NSString *)title message:(NSString *)message sureTitle:(nullable NSString *)sureTitle selectAction:(nullable WDAlertSelectOptionsBlock)handler;
+- (void)showAlertSelect:(nullable NSString *)title message:(NSString *)message sureTitle:(nullable NSString *)sureTitle cancelTitle:(nullable NSString *)cancelTitle selectAction:(nullable WDAlertSelectOptionsBlock)handler;
 
-/// 自定义弹框
--(void)showAlertCustomize:(WDSelectAlertStyleModel *)model clickAction:(clickItemBlcok _Nullable)click selectAction:(selectOptionsBlcok _Nullable)handler;
+/// 单按钮确认弹框
+- (void)showAlertSure:(nullable NSString *)title message:(NSString *)message sureTitle:(nullable NSString *)sureTitle selectAction:(nullable WDAlertSelectOptionsBlock)handler;
 
+/// 自定义富文本弹框
+- (void)showAlertCustomize:(WDSelectAlertStyleModel *)model clickAction:(nullable WDAlertClickItemBlock)click selectAction:(nullable WDAlertSelectOptionsBlock)handler;
 
-// MARK: -  Sheet弹框
-/// 选项弹框 选项+取消
--(void)showSheetSelect:(NSString * _Nullable)title selectItems:(NSArray<NSString *> *)selectItems selectedIndex:(NSInteger)selectedIndex disAbleItems:(NSArray<NSString *> * _Nullable)disAbleItems selectAction:(clickItemBlcok _Nullable)handler;
+// MARK: - Sheet 弹框
+- (void)showSheetSelect:(nullable NSString *)title
+            selectItems:(NSArray<NSString *> *)selectItems
+          selectedIndex:(NSInteger)selectedIndex
+           disAbleItems:(nullable NSArray<NSString *> *)disAbleItems
+           selectAction:(nullable WDAlertClickItemBlock)handler;
 
+// MARK: - 时间选择
+- (void)showDateSelect:(nullable NSDate *)date
+           minimumDate:(nullable NSDate *)min
+           maximumDate:(nullable NSDate *)max
+                 style:(WDDateAlertStyle)format
+          changeAction:(nullable void(^)(NSDate *date))changeHandler
+          selectAction:(nullable void(^)(BOOL isSure, NSDate *date))handler;
 
-// MARK: -  时间选择
-/// 时间选择
--(void)showDateSelect:(NSDate * _Nullable)date minimumDate:(NSDate * _Nullable)min maximumDate:(NSDate * _Nullable)max style:(WDDateAlertAlertStyle)format changeAction:(void(^)(NSDate * date))changeHandler selectAction:(void(^)(BOOL isSure, NSDate * date))handler;
+/// 时间区间选择
+- (void)showDateParagraphSelect:(nullable NSArray<NSString *> *)selectDateArr
+                          style:(WDDateIntervalAlertStyle)format
+                   selectAction:(nullable void(^)(BOOL isSure, NSString *begin, NSString *end))handler;
 
-/// 时间区间 选择
--(void)showDateParagraphSelect:(NSArray <NSString *> * _Nullable)selectDateArr style:(WDDateIntervalAlertStyle)format selectAction:(void(^)(BOOL isSure, NSString * begin, NSString * end))handler;
+// MARK: - 键值对选择
+- (void)showKeyValueSelect:(nullable NSArray<NSString *> *)keyArr
+                  valueArr:(nullable NSArray<NSString *> *)valueArr
+                     index:(NSInteger)index
+              selectAction:(nullable void(^)(BOOL isSure, NSInteger index))handler;
 
-// MARK: -  其他选择
-/// 键值对 选择
--(void)showKeyValueSelect:(NSArray <NSString *> * _Nullable)keyArr valueArr:(NSArray <NSString *> * _Nullable)valueArr index:(NSInteger)index selectAction:(void(^)(BOOL isSure, NSInteger index))handler;
-
-
-
-
-
-
-/// 取消
--(void)dismissAction;
-
+/// 关闭弹窗
+- (void)dismissAction;
 
 @end
 

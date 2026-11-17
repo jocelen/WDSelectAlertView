@@ -31,3 +31,8 @@ UserInterfaceState.xcuserstate
 *.dSYM.zip
 *.dSYM
 *.iml
+
+### Swift Package Manager ###
+.build/
+.swiftpm/
+Package.resolved
